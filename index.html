@@ -124,42 +124,19 @@
           >
             <!-- Toy Display -->
             <div
-              class="relative transform hover:scale-105 transition-transform cursor-pointer pb-4 h-32 flex items-end"
+              class="relative transform hover:scale-105 transition-transform cursor-pointer pb-4 h-32 flex items-end justify-center"
             >
               <img
                 id="toy-image"
                 alt="Toy"
-                class="max-w-[12rem] max-h-[8rem] object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.4)]"
+                class="hidden max-w-[12rem] max-h-[8rem] object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.4)]"
               />
-
-              <!-- Fallback SVG (Hidden initially) -->
-              <div id="toy-fallback" class="hidden">
-                <svg
-                  viewBox="0 0 100 100"
-                  class="w-40 h-32 drop-shadow-[0_10px_10px_rgba(0,0,0,0.4)]"
-                >
-                  <rect
-                    x="15"
-                    y="40"
-                    width="70"
-                    height="50"
-                    fill="#c0392b"
-                    rx="5"
-                  />
-                  <rect
-                    x="10"
-                    y="30"
-                    width="80"
-                    height="15"
-                    fill="#e74c3c"
-                    rx="5"
-                  />
-                  <rect x="42" y="30" width="16" height="60" fill="#f1c40f" />
-                  <path
-                    d="M 50 30 C 40 10 20 20 40 30 C 60 20 80 10 50 30 Z"
-                    fill="#f1c40f"
-                  />
-                </svg>
+              <!-- Fallback Emoji -->
+              <div
+                id="toy-fallback"
+                class="hidden text-[8rem] leading-none drop-shadow-[0_10px_10px_rgba(0,0,0,0.4)] pb-2"
+              >
+                🎁
               </div>
             </div>
 
@@ -486,38 +463,22 @@
       </div>
     </div>
 
+    <!-- Audio Elements -->
+    <audio id="sound-wrong" src="wrong.mp3" preload="auto"></audio>
+    <audio id="sound-popper" src="congrats.mp3" preload="auto"></audio>
+    <audio id="sound-congrats" src="congrats.mp3" preload="auto"></audio>
+
     <!-- Javascript Logic -->
     <script>
       // --- Data & Constants ---
       const ITEM_IMAGES = [
-        {
-          name: "Teddy Bear",
-          url: "https://cdn-icons-png.flaticon.com/512/3082/3082008.png",
-        },
-        {
-          name: "Robot",
-          url: "https://cdn-icons-png.flaticon.com/512/4113/4113004.png",
-        },
-        {
-          name: "Toy Train",
-          url: "https://cdn-icons-png.flaticon.com/512/3859/3859062.png",
-        },
-        {
-          name: "Toy Rocket",
-          url: "https://cdn-icons-png.flaticon.com/512/3233/3233483.png",
-        },
-        {
-          name: "Doll",
-          url: "https://cdn-icons-png.flaticon.com/512/3655/3655459.png",
-        },
-        {
-          name: "Toy Car",
-          url: "https://cdn-icons-png.flaticon.com/512/3081/3081971.png",
-        },
-        {
-          name: "Mystery Gift",
-          url: "https://invalid-image-url-to-test-fallback.com/broken.png",
-        },
+        { name: "Item 1", url: "" },
+        { name: "Item 2", url: "" },
+        { name: "Item 3", url: "" },
+        { name: "Item 4", url: "" },
+        { name: "Item 5", url: "" },
+        { name: "Item 6", url: "" },
+        { name: "Item 7", url: "" },
       ];
 
       const TOTAL_QUESTIONS = 7;
@@ -558,10 +519,12 @@
         percentTicks: document.getElementById("ruler-percent-ticks"),
         dollarTicks: document.getElementById("ruler-dollar-ticks"),
         rulerHandle: document.getElementById("ruler-handle"),
-      };
 
-      // Attach image error handler in JS to avoid parsing race conditions
-      DOM.toyImage.onerror = showFallbackToy;
+        // Sounds
+        soundWrong: document.getElementById("sound-wrong"),
+        soundPopper: document.getElementById("sound-popper"),
+        soundCongrats: document.getElementById("sound-congrats"),
+      };
 
       // --- Initialization ---
       function init() {
@@ -578,7 +541,8 @@
             ITEM_IMAGES[Math.floor(Math.random() * ITEM_IMAGES.length)];
           // Generate prices in multiples of 5 to allow decimals like 12.5 or 1.5
           const originalPrice = Math.floor(Math.random() * 29 + 2) * 5;
-          const discountPercent = Math.floor(Math.random() * 9 + 1) * 10;
+          // Generate discount from 10% up to 70%
+          const discountPercent = Math.floor(Math.random() * 7 + 1) * 10;
           const discountAmount = Number(
             ((originalPrice * discountPercent) / 100).toFixed(2),
           );
@@ -610,10 +574,20 @@
         DOM.priceDisplay.innerText = "$" + level.displayPrice;
         DOM.discountDisplay.innerText = `Discount: ${level.discountPercent}%`;
 
-        // Image handling
+        // Image handling with foolproof DOM toggle fallback
+        DOM.toyImage.classList.add("hidden");
         DOM.toyFallback.classList.add("hidden");
-        DOM.toyImage.classList.remove("hidden");
-        DOM.toyImage.src = level.imageUrl;
+
+        if (!level.imageUrl || level.imageUrl.trim() === "") {
+          DOM.toyFallback.classList.remove("hidden");
+        } else {
+          DOM.toyImage.onerror = function () {
+            DOM.toyImage.classList.add("hidden");
+            DOM.toyFallback.classList.remove("hidden");
+          };
+          DOM.toyImage.src = level.imageUrl;
+          DOM.toyImage.classList.remove("hidden");
+        }
 
         // Reset Ruler
         isAnimating = true;
@@ -630,11 +604,6 @@
         rulerVal = initVal;
 
         renderRuler();
-      }
-
-      function showFallbackToy() {
-        DOM.toyImage.classList.add("hidden");
-        DOM.toyFallback.classList.remove("hidden");
       }
 
       function restartGame() {
@@ -708,6 +677,12 @@
             }
           }, 3000);
         } else {
+          // Play Wrong Sound
+          DOM.soundWrong.currentTime = 0;
+          DOM.soundWrong
+            .play()
+            .catch((e) => console.log("Audio play error:", e));
+
           // Shake Error
           DOM.inputContainer.classList.add("shake-animation");
           setTimeout(() => {
@@ -722,6 +697,13 @@
       function showEndScreen() {
         DOM.gameScreen.classList.add("hidden");
         DOM.endScreen.classList.remove("hidden");
+
+        // Play Congrats Sound
+        DOM.soundCongrats.currentTime = 0;
+        DOM.soundCongrats
+          .play()
+          .catch((e) => console.log("Audio play error:", e));
+
         triggerPartyPopper(true); // Continuous party
       }
 
@@ -807,8 +789,9 @@
           minorStep = 2;
         } else if (max <= 250) {
           majorStep = 20;
-          minorStep = 5;
-        } else {
+          minorStep = 10;
+        } // Adjusted for exact 2 sub-divisions
+        else {
           majorStep = 50;
           minorStep = 10;
         }
@@ -868,6 +851,12 @@
 
       // --- Party Popper ---
       function triggerPartyPopper(continuous = false) {
+        // Play Popper Sound
+        DOM.soundPopper.currentTime = 0;
+        DOM.soundPopper
+          .play()
+          .catch((e) => console.log("Audio play error:", e));
+
         const colors = [
           "#f44336",
           "#e91e63",
