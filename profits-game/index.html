@@ -191,7 +191,89 @@
         </div>
       </div>
 
-      <!-- Success Popup Modal (Glassmorphism) -->
+      <!-- CALCULATION ANIMATION OVERLAY -->
+      <div
+        id="calc-overlay"
+        class="hidden absolute inset-0 bg-[#2c3e50]/90 backdrop-blur-sm flex items-center justify-center z-[75] opacity-0 transition-opacity duration-300"
+      >
+        <div
+          class="flex flex-col items-center gap-4 md:gap-8 font-black text-white text-3xl md:text-5xl w-full px-4"
+        >
+          <!-- Step 1: Breakdown -->
+          <div
+            id="calc-anim-step1"
+            class="opacity-0 transform translate-y-4 transition-all duration-500 flex flex-col md:flex-row items-center gap-4 md:gap-6 text-center"
+          >
+            <div
+              class="bg-[#4a2e15] border-[3px] border-[#cddc39] text-[#cddc39] px-6 py-3 rounded-2xl shadow-lg flex items-center gap-3"
+            >
+              <span class="text-xl md:text-3xl opacity-80">100%</span>
+              <span class="text-2xl md:text-4xl">➔</span>
+              <span>$<span id="anim-cp">0</span></span>
+            </div>
+            <div class="text-gray-400 font-sans text-4xl hidden md:block">
+              +
+            </div>
+            <div
+              class="bg-[#4a2e15] border-[3px] border-yellow-400 text-yellow-400 px-6 py-3 rounded-2xl shadow-lg flex items-center gap-3"
+            >
+              <span class="text-xl md:text-3xl opacity-80"
+                ><span id="anim-profit-pct">0</span>%</span
+              >
+              <span class="text-2xl md:text-4xl">➔</span>
+              <span>$<span id="anim-profit">0</span></span>
+            </div>
+          </div>
+
+          <!-- Step 2: Addition Equation -->
+          <div
+            id="calc-anim-step2"
+            class="opacity-0 transform translate-y-4 transition-all duration-500 bg-white text-[#4a2e15] px-6 py-4 md:px-10 md:py-6 rounded-3xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex items-center justify-center flex-wrap gap-2 md:gap-4 mt-2"
+          >
+            <span class="text-green-600 drop-shadow-sm"
+              >$<span id="anim-add-cp">0</span></span
+            >
+            <span class="text-gray-300 mx-1 md:mx-2">+</span>
+            <span class="text-yellow-500 drop-shadow-sm"
+              >$<span id="anim-add-profit">0</span></span
+            >
+            <span class="text-gray-300 mx-1 md:mx-2">=</span>
+            <span class="text-blue-600 drop-shadow-sm"
+              >$<span id="anim-calc-sp">0</span></span
+            >
+          </div>
+
+          <!-- Step 3: Comparison -->
+          <div
+            id="calc-anim-step3"
+            class="opacity-0 transform translate-y-4 transition-all duration-500 mt-2 px-6 py-5 md:px-10 md:py-8 rounded-3xl border-[4px] md:border-[6px] bg-[#2c3e50] shadow-2xl flex flex-col items-center gap-3 w-full max-w-2xl"
+          >
+            <div
+              class="text-gray-300 text-sm md:text-xl uppercase tracking-widest font-bold"
+            >
+              Your Total vs Target
+            </div>
+            <div class="flex items-center gap-3 md:gap-6 w-full justify-center">
+              <span class="text-blue-400 flex-1 text-right"
+                >$<span id="anim-cmp-calc">0</span></span
+              >
+              <div
+                class="bg-[#1a252f] rounded-full px-4 py-1 shadow-inner flex items-center justify-center min-w-[3rem] md:min-w-[5rem]"
+              >
+                <span
+                  id="anim-operator"
+                  class="text-white text-3xl md:text-6xl font-sans leading-none pb-1 md:pb-2"
+                ></span>
+              </div>
+              <span class="text-white flex-1 text-left"
+                >$<span id="anim-cmp-target">0</span></span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Success Popup Modal -->
       <div
         id="success-popup"
         class="hidden absolute inset-0 bg-[#2c3e50]/40 backdrop-blur-md flex items-center justify-center z-[60] p-4 opacity-0 transition-opacity duration-300"
@@ -220,38 +302,39 @@
             <div
               class="text-[#8b5a2b] font-black text-sm md:text-xl uppercase tracking-wider mb-3"
             >
-              How we calculate Profit:
+              How we calculate Selling Price:
             </div>
 
             <div
               class="text-[#4a2e15] font-black text-base md:text-2xl mb-2 bg-[#f0e6d2] rounded-lg py-1 md:py-2 px-2 border border-[#d9c5a0]"
             >
-              Profit = SP - CP
+              SP = CP + Profit
             </div>
 
             <div
               class="text-[#4a2e15] font-black text-lg md:text-3xl flex items-center justify-center gap-1.5 md:gap-2 mt-3 md:mt-4"
             >
-              Profit =
-              <span
-                class="text-blue-600 bg-blue-100 px-1 md:px-2 rounded border border-blue-200 shadow-sm"
-                >$<span id="popup-sp">0</span></span
-              >
-              -
+              SP =
               <span
                 class="text-green-600 bg-green-100 px-1 md:px-2 rounded border border-green-200 shadow-sm"
                 >$<span id="popup-cp">0</span></span
               >
+              +
+              <span
+                class="text-yellow-600 bg-yellow-100 px-1 md:px-2 rounded border border-yellow-200 shadow-sm"
+                >$<span id="popup-profit">0</span></span
+              >
             </div>
 
             <div
-              class="mt-2 md:mt-4 text-2xl md:text-5xl font-black text-yellow-500 drop-shadow-[0_2px_2px_rgba(0,0,0,0.3)] bg-yellow-50 inline-block px-4 py-2 rounded-xl border-2 border-yellow-200"
+              class="mt-2 md:mt-4 text-2xl md:text-5xl font-black text-blue-500 drop-shadow-[0_2px_2px_rgba(0,0,0,0.3)] bg-blue-50 inline-block px-4 py-2 rounded-xl border-2 border-blue-200"
             >
-              = $<span id="popup-profit">0</span>
+              = $<span id="popup-sp">0</span>
             </div>
           </div>
 
           <button
+            id="next-level-btn"
             onclick="advanceToNextLevel()"
             class="relative z-10 w-full bg-[#4CAF50] hover:bg-[#43A047] text-white py-3 md:py-4 rounded-xl md:rounded-2xl font-black text-lg md:text-2xl transition-all duration-150 active:translate-y-[4px] active:shadow-[0_0px_0_#1B5E20] shadow-[0_6px_0_#1B5E20] border-[2px] md:border-[3px] border-[#1B5E20] flex items-center justify-center gap-2 uppercase tracking-wide"
           >
@@ -272,12 +355,71 @@
         </div>
       </div>
 
-      <!-- Toast Feedback Notification -->
+      <!-- Failure Popup Modal -->
       <div
-        id="toast-notification"
-        class="absolute bottom-[45%] left-1/2 -translate-x-1/2 bg-white border-4 border-gray-500 text-gray-800 font-black text-xl md:text-3xl px-6 py-3 rounded-full shadow-2xl pointer-events-none transition-all duration-300 z-50 transform scale-90 opacity-0"
+        id="failure-popup"
+        class="hidden absolute inset-0 bg-[#2c3e50]/40 backdrop-blur-md flex items-center justify-center z-[60] p-4 opacity-0 transition-opacity duration-300"
       >
-        Message
+        <div
+          class="bg-[#fff8e7] border-[4px] md:border-[6px] border-[#c0392b] rounded-2xl md:rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-6 md:p-8 w-full max-w-md md:max-w-lg transform scale-90 transition-transform duration-300 text-center relative overflow-hidden"
+        >
+          <div
+            class="absolute -top-10 -right-10 text-red-400/20 text-9xl pointer-events-none rotate-12"
+          >
+            ❌
+          </div>
+
+          <h2
+            class="text-3xl md:text-5xl font-black text-[#c0392b] mb-2 drop-shadow-sm"
+          >
+            Not quite!
+          </h2>
+          <p class="text-[#5c3a1e] font-bold text-sm md:text-lg mb-4 md:mb-6">
+            The math didn't add up to the Target.
+          </p>
+
+          <div
+            class="bg-white/90 rounded-xl border-2 border-[#e6b0aa] p-4 md:p-6 mb-6 md:mb-8 text-center shadow-inner relative z-10 flex flex-col items-center"
+          >
+            <p class="text-sm md:text-lg text-gray-700 font-bold mb-1">
+              Your Calculated Selling Price was:
+            </p>
+            <p
+              class="text-3xl md:text-4xl text-red-500 font-black mb-4 bg-red-50 px-6 py-2 border-2 border-red-200 rounded-xl shadow-inner"
+            >
+              $<span id="fail-calc-sp">0</span>
+            </p>
+
+            <p class="text-sm md:text-lg text-gray-700 font-bold mb-1">
+              But we needed a Target of:
+            </p>
+            <p
+              class="text-3xl md:text-4xl text-blue-500 font-black bg-blue-50 px-6 py-2 border-2 border-blue-200 rounded-xl shadow-inner"
+            >
+              $<span id="fail-target-sp">0</span>
+            </p>
+          </div>
+
+          <button
+            onclick="hideFailurePopup()"
+            class="relative z-10 w-full bg-[#e74c3c] hover:bg-[#c0392b] text-white py-3 md:py-4 rounded-xl md:rounded-2xl font-black text-lg md:text-2xl transition-all duration-150 active:translate-y-[4px] active:shadow-[0_0px_0_#78281f] shadow-[0_6px_0_#78281f] border-[2px] md:border-[3px] border-[#78281f] flex items-center justify-center gap-2 uppercase tracking-wide"
+          >
+            TRY AGAIN
+            <svg
+              class="w-6 h-6 md:w-8 md:h-8"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <!-- PLAYING SCREEN -->
@@ -471,7 +613,7 @@
                 <div
                   class="relative flex flex-col justify-between h-[3rem] md:h-[4.5rem] w-full my-auto"
                 >
-                  <!-- Dynamic Profit Connector (Horizontal Line joined from 100% Handle) -->
+                  <!-- Dynamic Profit Connector (Horizontal Line joined from 0% start) -->
                   <div
                     id="profit-connector"
                     class="absolute top-0 h-[2px] md:h-[4px] bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.8)] z-10 pointer-events-none"
@@ -484,14 +626,14 @@
                     class="absolute top-0 bottom-0 w-[2px] md:w-[3px] bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.8)] z-20 pointer-events-none"
                     style="display: none"
                   >
-                    <!-- Top Label (+25%) safely pushed UP -->
+                    <!-- Top Label (e.g. 25%) safely pushed UP -->
                     <div
                       class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full pb-3 md:pb-5 z-30"
                     >
                       <div
                         class="bg-[#4a2e15] text-yellow-400 font-black text-[0.6rem] md:text-[0.95rem] px-2 md:px-3 py-0.5 md:py-1 rounded-full border-[1.5px] md:border-2 border-yellow-500 shadow-lg whitespace-nowrap flex items-center justify-center gap-1"
                       >
-                        ⭐ <span id="profit-percent-text">+ 25%</span>
+                        ⭐ <span id="profit-percent-text">25%</span>
                       </div>
                     </div>
 
@@ -505,7 +647,7 @@
                       class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2.5 h-2.5 md:w-4 md:h-4 bg-white rounded-full border-[2px] md:border-[3px] border-yellow-400 shadow-[0_0_8px_rgba(250,204,21,1)] z-30"
                     ></div>
 
-                    <!-- Bottom Label (Target Selling Price $) safely pushed DOWN -->
+                    <!-- Bottom Label (Target Profit Price $) safely pushed DOWN -->
                     <div
                       class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full pt-8 md:pt-12 z-30"
                     >
@@ -628,7 +770,6 @@
                   </div>
 
                   <!-- Tutorial Hand Image Element (👆) -->
-                  <!-- transition: only top and opacity to allow left position to be instant in loop -->
                   <div
                     id="tutorial-hand"
                     class="absolute top-[120%] left-1/2 -translate-x-1/2 text-5xl md:text-7xl pointer-events-none z-[100] opacity-0"
@@ -754,9 +895,9 @@
       let maxPounds = 60;
       let isDragging = false;
       let isAnimating = true;
-      let toastTimeout;
       let isLevelComplete = false;
       let isTutorialActive = false;
+      let isAnimatingCalculation = false;
 
       const DOM = {
         startScreen: document.getElementById("start-screen"),
@@ -771,9 +912,9 @@
         toyFallback: document.getElementById("toy-fallback"),
         priceDisplay: document.getElementById("price-display"),
         tagDisplay: document.getElementById("tag-display"),
+        priceLabel: document.getElementById("price-label"),
 
         partyContainer: document.getElementById("party-popper-container"),
-        toast: document.getElementById("toast-notification"),
 
         rulerTrackArea: document.getElementById("ruler-track-area"),
         topTrack: document.getElementById("ruler-top-track"),
@@ -786,10 +927,30 @@
         submitBtn: document.getElementById("submit-btn"),
         hintMarker: document.getElementById("hint-marker"),
 
+        // Animation Overlay Elements
+        calcOverlay: document.getElementById("calc-overlay"),
+        animCp: document.getElementById("anim-cp"),
+        animProfitPct: document.getElementById("anim-profit-pct"),
+        animProfit: document.getElementById("anim-profit"),
+        animAddCp: document.getElementById("anim-add-cp"),
+        animAddProfit: document.getElementById("anim-add-profit"),
+        animCalcSp: document.getElementById("anim-calc-sp"),
+        animCmpCalc: document.getElementById("anim-cmp-calc"),
+        animOperator: document.getElementById("anim-operator"),
+        animCmpTarget: document.getElementById("anim-cmp-target"),
+        step1: document.getElementById("calc-anim-step1"),
+        step2: document.getElementById("calc-anim-step2"),
+        step3: document.getElementById("calc-anim-step3"),
+
         successPopup: document.getElementById("success-popup"),
         popupSp: document.getElementById("popup-sp"),
         popupCp: document.getElementById("popup-cp"),
         popupProfit: document.getElementById("popup-profit"),
+        nextLevelBtn: document.getElementById("next-level-btn"),
+
+        failurePopup: document.getElementById("failure-popup"),
+        failCalcSp: document.getElementById("fail-calc-sp"),
+        failTargetSp: document.getElementById("fail-target-sp"),
 
         profitConnector: document.getElementById("profit-connector"),
         profitMarkerLine: document.getElementById("profit-marker-line"),
@@ -844,11 +1005,11 @@
           newQs.push({
             toyName: item.name,
             imageUrl: item.url,
-            displayPrice: sp,
+            displayPrice: sp, // We display the selling price
             profitPercent: percent,
             expectedCP: cp,
             modalTitle: "Find the Cost Price!",
-            modalDesc: `The item sold for <b>$${sp}</b>, making a <b>${percent}% profit</b>.<br/>Drag the 100% handle until the <b>+${percent}% marker</b> matches <b>$${sp}</b>!`,
+            modalDesc: `The item was sold for <b>$${sp}</b>, which includes a <b>${percent}%</b> profit on the cost.<br/>Drag the 100% handle so the Cost Price + Profit equals <b>$${sp}</b>!`,
           });
         }
         return newQs;
@@ -863,6 +1024,7 @@
         DOM.levelIndicator.innerHTML = `⭐ Level ${currentLevelIndex + 1} of ${TOTAL_QUESTIONS}`;
         DOM.priceDisplay.innerText = "$" + level.displayPrice;
         DOM.tagDisplay.innerText = `Profit: ${level.profitPercent}%`;
+        DOM.priceLabel.innerText = "SELLING PRICE:";
 
         DOM.toyImage.classList.add("hidden");
         DOM.toyFallback.classList.add("hidden");
@@ -905,31 +1067,27 @@
 
       async function runTutorialSequence() {
         isTutorialActive = true;
-        isAnimating = false; // Disable CSS transitions for handle/track during manual update
+        isAnimating = false;
 
-        // Wait for menu hide
         await new Promise((r) => setTimeout(r, 200));
 
         const hand = DOM.tutorialHand;
         const startVal = rulerVal;
-        const endVal = rulerVal * 0.6; // Demonstration: slide back to 60%
+        const endVal = questions[0].expectedCP;
         const startXPercent = (startVal / maxPounds) * 100;
 
-        // 1. Position hand under current handle
         hand.style.left = `${startXPercent}%`;
         hand.style.opacity = "1";
         hand.style.top = "120%";
 
         await new Promise((r) => setTimeout(r, 300));
-        hand.style.top = "50%"; // Move hand UP so tip touches handle
+        hand.style.top = "50%";
 
         await new Promise((r) => setTimeout(r, 600));
 
-        // 2. Click effect
         hand.classList.add("hand-clicking");
         await new Promise((r) => setTimeout(r, 400));
 
-        // 3. Slide animation (Syncing hand and handle every frame)
         const duration = 1500;
         const startTime = performance.now();
 
@@ -938,14 +1096,11 @@
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
 
-            // Ease out quadratic
             const easeProgress = progress * (2 - progress);
 
-            // Update data
             rulerVal = startVal - (startVal - endVal) * easeProgress;
             const currentPercent = (rulerVal / maxPounds) * 100;
 
-            // Sync visuals instantly
             hand.style.left = `${currentPercent}%`;
             updateRulerVisualsOnly();
 
@@ -964,7 +1119,6 @@
               setTimeout(() => {
                 isTutorialActive = false;
                 isAnimating = true;
-                // Reset rulerVal to initial state so player can play level 1
                 rulerVal = startVal;
                 updateRulerVisualsOnly();
                 resolve();
@@ -981,20 +1135,123 @@
         DOM.gameScreen.classList.remove("hidden");
         DOM.gameScreen.classList.add("flex");
         DOM.partyContainer.innerHTML = "";
+
+        DOM.startScreen.classList.remove("hidden");
+        DOM.startScreen.style.opacity = "1";
         init();
       }
 
-      function checkWinCondition() {
-        if (isTutorialActive) return;
+      async function playCalculationAnimation(
+        cp,
+        profitPct,
+        profitAmount,
+        calcSp,
+        targetSp,
+        isCorrect,
+      ) {
+        // Populate DOM elements
+        DOM.animCp.innerText = cp;
+        DOM.animProfitPct.innerText = profitPct;
+        DOM.animProfit.innerText = profitAmount;
+
+        DOM.animAddCp.innerText = cp;
+        DOM.animAddProfit.innerText = profitAmount;
+        DOM.animCalcSp.innerText = calcSp;
+
+        DOM.animCmpCalc.innerText = calcSp;
+        DOM.animCmpTarget.innerText = targetSp;
+
+        if (isCorrect) {
+          DOM.animOperator.innerText = "==";
+          DOM.animOperator.classList.remove("text-red-500");
+          DOM.animOperator.classList.add("text-green-500");
+          DOM.step3.classList.remove("border-red-500", "border-[#2c3e50]");
+          DOM.step3.classList.add("border-green-500");
+        } else {
+          DOM.animOperator.innerText = "≠";
+          DOM.animOperator.classList.remove("text-green-500");
+          DOM.animOperator.classList.add("text-red-500");
+          DOM.step3.classList.remove("border-green-500", "border-[#2c3e50]");
+          DOM.step3.classList.add("border-red-500");
+        }
+
+        // Show overlay base
+        DOM.calcOverlay.classList.remove("hidden");
+        void DOM.calcOverlay.offsetWidth; // Reflow
+        DOM.calcOverlay.classList.remove("opacity-0");
+
+        // Reset steps
+        [DOM.step1, DOM.step2, DOM.step3].forEach((el) => {
+          el.classList.remove("opacity-100", "translate-y-0");
+          el.classList.add("opacity-0", "translate-y-4");
+        });
+
+        // Animate sequence
+        await new Promise((r) => setTimeout(r, 400));
+        DOM.step1.classList.remove("opacity-0", "translate-y-4");
+        DOM.step1.classList.add("opacity-100", "translate-y-0");
+
+        await new Promise((r) => setTimeout(r, 1000));
+        DOM.step2.classList.remove("opacity-0", "translate-y-4");
+        DOM.step2.classList.add("opacity-100", "translate-y-0");
+
+        await new Promise((r) => setTimeout(r, 1200));
+        DOM.step3.classList.remove("opacity-0", "translate-y-4");
+        DOM.step3.classList.add("opacity-100", "translate-y-0");
+
+        // Let user see result before continuing
+        await new Promise((r) => setTimeout(r, 2200));
+
+        // Hide overlay
+        DOM.calcOverlay.classList.add("opacity-0");
+        await new Promise((r) => setTimeout(r, 300));
+        DOM.calcOverlay.classList.add("hidden");
+      }
+
+      async function checkWinCondition() {
+        if (isTutorialActive || isAnimatingCalculation) return;
+
+        isAnimatingCalculation = true;
         const level = questions[currentLevelIndex];
-        if (rulerVal === level.expectedCP) {
+
+        // Snapped value calculation
+        const snappedVal = Math.round(rulerVal / 10) * 10;
+
+        // Match calculation logic matching visually what they see
+        const calculatedProfit = Math.round(
+          (snappedVal * level.profitPercent) / 100,
+        );
+        const calculatedSP = snappedVal + calculatedProfit;
+        const targetSP = level.displayPrice; // We asked them to match the Selling Price
+
+        const isCorrect = snappedVal === level.expectedCP;
+
+        // Run the intermediate animation
+        await playCalculationAnimation(
+          snappedVal,
+          level.profitPercent,
+          calculatedProfit,
+          calculatedSP,
+          targetSP,
+          isCorrect,
+        );
+
+        if (isCorrect) {
           isLevelComplete = true;
+          rulerVal = snappedVal;
+          updateRulerVisualsOnly();
           triggerPartyPopper();
 
-          const profitAmount = level.displayPrice - level.expectedCP;
-          DOM.popupSp.innerText = level.displayPrice;
+          // Prepare and show Success Modal
           DOM.popupCp.innerText = level.expectedCP;
-          DOM.popupProfit.innerText = profitAmount;
+          DOM.popupProfit.innerText = calculatedProfit;
+          DOM.popupSp.innerText = targetSP;
+
+          if (currentLevelIndex === questions.length - 1) {
+            DOM.nextLevelBtn.innerHTML = `FINISH <svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5l10 -10" /></svg>`;
+          } else {
+            DOM.nextLevelBtn.innerHTML = `NEXT LEVEL <svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>`;
+          }
 
           DOM.successPopup.classList.remove("hidden");
           void DOM.successPopup.offsetWidth;
@@ -1002,6 +1259,7 @@
           DOM.successPopup.querySelector("div").classList.remove("scale-90");
           DOM.successPopup.querySelector("div").classList.add("scale-100");
         } else {
+          // Play wrong sound
           DOM.soundWrong.currentTime = 0;
           DOM.soundWrong.play().catch((e) => console.log("Audio error:", e));
 
@@ -1009,6 +1267,30 @@
           void DOM.submitBtn.offsetWidth;
           DOM.submitBtn.classList.add("animate-shake");
 
+          // Prepare and show Failure Modal
+          DOM.failCalcSp.innerText = calculatedSP;
+          DOM.failTargetSp.innerText = targetSP;
+
+          DOM.failurePopup.classList.remove("hidden");
+          void DOM.failurePopup.offsetWidth;
+          DOM.failurePopup.classList.remove("opacity-0");
+          DOM.failurePopup.querySelector("div").classList.remove("scale-90");
+          DOM.failurePopup.querySelector("div").classList.add("scale-100");
+        }
+
+        isAnimatingCalculation = false;
+      }
+
+      function hideFailurePopup() {
+        DOM.failurePopup.classList.add("opacity-0");
+        DOM.failurePopup.querySelector("div").classList.remove("scale-100");
+        DOM.failurePopup.querySelector("div").classList.add("scale-90");
+
+        setTimeout(() => {
+          DOM.failurePopup.classList.add("hidden");
+
+          // Blink Hint Marker after popup closes to guide them
+          const level = questions[currentLevelIndex];
           const correctPercentX = (level.expectedCP / maxPounds) * 100;
           DOM.hintMarker.style.left = `${correctPercentX}%`;
           DOM.hintMarker.style.transform = `translateX(-50%)`;
@@ -1016,7 +1298,7 @@
           DOM.hintMarker.classList.remove("animate-blink-marker");
           void DOM.hintMarker.offsetWidth;
           DOM.hintMarker.classList.add("animate-blink-marker");
-        }
+        }, 300);
       }
 
       function advanceToNextLevel() {
@@ -1044,7 +1326,8 @@
       }
 
       function handlePointerDown(e) {
-        if (isLevelComplete || isTutorialActive) return;
+        if (isLevelComplete || isTutorialActive || isAnimatingCalculation)
+          return;
         isAnimating = false;
         isDragging = true;
         updateDrag(e);
@@ -1078,19 +1361,31 @@
       }
 
       function updateDrag(e) {
-        if (!isDragging || isLevelComplete || isTutorialActive) return;
+        if (
+          !isDragging ||
+          isLevelComplete ||
+          isTutorialActive ||
+          isAnimatingCalculation
+        )
+          return;
+
+        // Safely extract client coordinates across diverse pointer/touch events
+        const x = e.clientX ?? e.touches?.[0]?.clientX;
+        if (x === undefined || x === null) return;
+
         const rect = DOM.rulerTrackArea.getBoundingClientRect();
         const trackWidthPx = rect.width;
-        let x = e.clientX || (e.touches && e.touches[0].clientX);
-        if (!x) return;
-        x = x - rect.left;
-        let percentX = x / trackWidthPx;
+
+        const pointerX = x - rect.left;
+        let percentX = pointerX / trackWidthPx;
+
         if (percentX > 0.95) {
           maxPounds *= 1.03;
           percentX = 0.95;
           renderRuler();
         }
         if (percentX < 0.05) percentX = 0.05;
+
         rulerVal = percentX * maxPounds;
         updateRulerVisualsOnly();
       }
@@ -1157,10 +1452,10 @@
       function updateRulerVisualsOnly() {
         const topTrackWidthPercent = (rulerVal / maxPounds) * 100;
         const level = questions[currentLevelIndex];
-        const targetPercent = 100 + (level ? level.profitPercent : 0);
+        const targetPercent = level ? level.profitPercent : 0;
 
         let percentHtml = "";
-        for (let tick = 0; tick <= targetPercent; tick += 10) {
+        for (let tick = 0; tick <= 100; tick += 10) {
           const isSpecialTarget = level && tick === targetPercent;
           if (tick === 100 || isSpecialTarget) continue;
           let showText = false;
@@ -1180,7 +1475,6 @@
         }
         DOM.percentTicks.innerHTML = percentHtml;
 
-        // Disable transitions during dragging OR tutorial sliding for frame-perfect sync
         const useTransition = isAnimating && !isTutorialActive;
         if (useTransition) {
           DOM.topTrack.classList.add("ruler-animating");
@@ -1210,9 +1504,9 @@
           DOM.profitMarkerLine.style.left = `${xPos}%`;
           DOM.profitMarkerLine.style.transform = `translateX(-50%)`;
           DOM.profitConnector.style.display = "block";
-          DOM.profitConnector.style.left = `${topTrackWidthPercent}%`;
-          DOM.profitConnector.style.width = `${xPos - topTrackWidthPercent}%`;
-          DOM.profitPercentText.innerText = "+" + level.profitPercent + "%";
+          DOM.profitConnector.style.left = `0%`;
+          DOM.profitConnector.style.width = `${xPos}%`;
+          DOM.profitPercentText.innerText = level.profitPercent + "%";
           DOM.profitMarkerValue.innerText =
             "$" + Math.round((targetPercent / 100) * rulerVal);
         } else {
