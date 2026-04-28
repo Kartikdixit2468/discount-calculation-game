@@ -2,10 +2,43 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>Percentage Game</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+      /* Dynamic Scaling Magic: Turns the entire app into a scalable vector! */
+      html {
+        /* 1rem perfectly equals 1/64th of the canvas width, always */
+        font-size: calc(min(100vw, 160dvh, 1024px) / 64) !important;
+      }
+
+      /* Responsive Canvas Magic: Locks aspect ratio and prevents scrolling */
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #2c3e50;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100dvh;
+        width: 100vw;
+        overflow: hidden; /* No scrolling globally! */
+      }
+
+      .responsive-canvas {
+        width: min(100vw, 160dvh, 1024px);
+        height: min(100dvh, 62.5vw, 640px);
+        aspect-ratio: 16 / 10;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-sizing: border-box;
+      }
+
       /* Custom Animations */
       @keyframes popExplode {
         0% {
@@ -40,70 +73,85 @@
 
       .shake-animation {
         animation: shakeError 0.4s ease-in-out;
-        border-color: #ef4444 !important; /* Tailwind red-500 */
+        border-color: #ef4444 !important;
       }
 
-      /* Perspective for price tag */
       .perspective-1000 {
         perspective: 1000px;
       }
 
-      /* Prevent text selection while dragging */
       .no-select {
         user-select: none;
         -webkit-user-select: none;
       }
 
-      /* Smooth transitions for the ruler */
       .ruler-animating {
         transition: all 0.5s ease-out;
       }
     </style>
   </head>
-  <body
-    class="min-h-screen bg-[#2c3e50] flex items-center justify-center p-4 font-sans no-select overflow-hidden"
-  >
+  <body class="font-sans no-select">
     <!-- Main Game Container -->
     <div
       id="app-container"
-      class="relative w-full max-w-5xl aspect-[16/10] bg-[#e6d5b8] rounded-xl overflow-hidden shadow-2xl border-8 border-[#34495e] flex flex-col"
+      class="responsive-canvas bg-[#e6d5b8] rounded-xl shadow-2xl border-8 border-[#34495e]"
     >
       <!-- Party Popper Container (Overlay) -->
       <div
         id="party-popper-container"
-        class="absolute inset-0 pointer-events-none overflow-hidden z-50"
+        class="absolute inset-0 pointer-events-none z-50"
       ></div>
 
       <!-- PLAYING SCREEN -->
       <div id="game-screen" class="flex flex-col h-full w-full">
-        <!-- Top Shelf Area -->
-        <div class="flex-1 relative flex items-end pb-8">
+        <!-- Top Shelf Area (55% Height) -->
+        <div class="h-[55%] relative flex flex-col pt-6">
           <!-- Background Wall -->
           <div
             class="absolute inset-0 bg-gradient-to-b from-[#f0e6d2] to-[#d9c5a0]"
           ></div>
           <!-- Shelf Wood -->
           <div
-            class="absolute bottom-0 w-full h-8 bg-[#8b5a2b] shadow-[0_-10px_20px_rgba(0,0,0,0.3)] border-t-2 border-[#a67b4f]"
+            class="absolute bottom-0 w-full h-[10%] bg-[#8b5a2b] shadow-[0_-10px_20px_rgba(0,0,0,0.3)] border-t-2 border-[#a67b4f]"
           ></div>
 
-          <!-- Level Progress -->
-          <div
-            id="level-indicator"
-            class="absolute top-4 left-6 text-[#8b5a2b] font-bold text-xl drop-shadow-sm z-20"
-          >
-            Level 1 of 7
+          <!-- Top Left UI (Level & Instructions) -->
+          <div class="relative z-20 flex flex-col w-full px-8 pr-24">
+            <!-- Level Progress -->
+            <div
+              id="level-indicator"
+              class="text-[#8b5a2b] font-bold text-lg drop-shadow-sm mb-0.5"
+            >
+              Level 1 of 7
+            </div>
+
+            <!-- Persistent Instruction Text -->
+            <div class="flex items-start">
+              <div>
+                <h3
+                  id="on-screen-title"
+                  class="font-black text-[#4a2e15] text-2xl leading-tight mb-1 drop-shadow-sm"
+                >
+                  New Task!
+                </h3>
+                <p
+                  id="on-screen-desc"
+                  class="text-base text-[#5c3a1e] font-bold leading-snug break-words"
+                >
+                  Instruction details go here.
+                </p>
+              </div>
+            </div>
           </div>
 
           <!-- Restart Button -->
           <button
             onclick="restartGame()"
-            class="absolute top-4 right-4 text-teal-600 hover:text-teal-800 bg-white/50 p-2 rounded-full backdrop-blur-sm z-20 transition-transform active:scale-95"
+            class="absolute top-6 right-8 text-teal-600 hover:text-teal-800 bg-white/50 p-3 rounded-full backdrop-blur-sm z-20 transition-transform active:scale-95 shadow-sm"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
+              class="w-8 h-8"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -120,50 +168,49 @@
 
           <!-- Interactive Shelf Items -->
           <div
-            class="relative z-10 w-full flex justify-center items-end gap-16 px-10"
+            class="relative z-10 w-full flex-1 flex justify-center items-end gap-16 px-12 pb-[2%] min-h-0"
           >
             <!-- Toy Display -->
             <div
-              class="relative transform hover:scale-105 transition-transform cursor-pointer pb-4 h-32 flex items-end justify-center"
+              class="relative transform hover:scale-105 transition-transform cursor-pointer pb-[1%] h-[90%] flex items-end justify-center"
             >
               <img
                 id="toy-image"
                 alt="Toy"
-                class="hidden max-w-[12rem] max-h-[8rem] object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.4)]"
+                class="hidden h-full w-auto max-w-[16rem] object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.4)]"
               />
               <!-- Fallback Emoji -->
               <div
                 id="toy-fallback"
-                class="hidden text-[8rem] leading-none drop-shadow-[0_10px_10px_rgba(0,0,0,0.4)] pb-2"
+                class="hidden text-[10rem] leading-none drop-shadow-[0_10px_10px_rgba(0,0,0,0.4)] pb-4"
               >
                 🎁
               </div>
             </div>
 
             <!-- Price Tag -->
-            <div class="relative bottom-4 perspective-1000">
+            <div class="relative bottom-[8%] perspective-1000">
               <div
-                class="bg-white border border-gray-200 rounded-sm shadow-xl p-4 w-48 text-center relative origin-bottom transform rotateX-10"
+                class="bg-white border border-gray-200 rounded-sm shadow-xl p-5 w-56 text-center relative origin-bottom transform rotateX-10"
               >
                 <div
                   id="price-label"
-                  class="text-sm text-gray-500 font-semibold uppercase tracking-wider mb-1"
+                  class="text-base text-gray-500 font-bold uppercase tracking-wider mb-1 leading-none"
                 >
                   Price:
                 </div>
                 <div
                   id="price-display"
-                  class="text-4xl font-bold text-green-700 mb-2"
+                  class="text-5xl font-black text-gray-800 mb-3 leading-tight"
                 >
                   $0
                 </div>
                 <div
-                  id="discount-display"
-                  class="bg-green-500 text-white text-sm font-bold py-1 px-2 rounded-sm transform -rotate-2 shadow-md inline-block"
+                  id="tag-display"
+                  class="bg-green-500 text-white text-sm font-bold py-1.5 px-3 rounded-sm transform -rotate-2 shadow-md inline-block whitespace-nowrap"
                 >
                   Discount: 0%
                 </div>
-                <!-- Fold illusion -->
                 <div
                   class="absolute top-0 right-0 w-4 h-4 bg-gray-100 border-l border-b border-gray-200 shadow-sm rounded-bl-sm"
                 ></div>
@@ -172,12 +219,11 @@
           </div>
         </div>
 
-        <!-- Ruler Drawer Area -->
+        <!-- Ruler Drawer Area (25% Height) -->
         <div
           id="ruler-container"
-          class="h-48 bg-[#9c6633] relative border-t-4 border-b-4 border-[#5c3a1e] shadow-inner flex items-center z-20 overflow-hidden"
+          class="h-[25%] bg-[#9c6633] relative border-t-[3px] border-b-[3px] border-[#5c3a1e] shadow-inner flex items-center z-20"
         >
-          <!-- Wood grain textures -->
           <div
             class="absolute inset-0 opacity-20 pointer-events-none"
             style="
@@ -203,49 +249,50 @@
             "
           ></div>
 
-          <!-- Double Number Line Structure -->
           <div
-            class="w-full h-full flex flex-col justify-center px-4 relative z-10"
+            class="w-full h-full flex flex-col justify-center px-6 relative z-10"
           >
             <div class="flex w-full items-stretch">
               <!-- Symbols Column -->
               <div
-                class="w-[50px] flex flex-col justify-between py-2 text-white font-bold text-2xl font-serif"
+                class="w-[3.75rem] flex flex-col justify-between py-3 text-white font-bold text-3xl font-serif"
               >
                 <div
-                  class="flex items-center justify-center h-12 text-[#dce775] drop-shadow-md"
+                  class="flex items-center justify-center h-[25%] text-[#dce775] drop-shadow-md"
                 >
                   %
                 </div>
-                <div class="h-4"></div>
+                <div class="flex-1"></div>
                 <div
-                  class="flex items-center justify-center h-12 drop-shadow-md"
+                  class="flex items-center justify-center h-[25%] drop-shadow-md"
                 >
                   $
                 </div>
               </div>
 
               <!-- Tracks Column -->
-              <div id="ruler-track-area" class="flex-1 relative cursor-pointer">
+              <div
+                id="ruler-track-area"
+                class="flex-1 relative cursor-pointer touch-none ml-2 flex flex-col justify-between py-3"
+              >
                 <!-- Top Track (Percentages) -->
-                <div class="relative h-12 flex items-center">
+                <div class="relative h-[25%] flex items-center">
                   <div
                     id="ruler-top-track"
-                    class="absolute left-0 h-[3px] bg-[#dce775] shadow-[0_1px_5px_rgba(220,231,117,0.8)] origin-left"
+                    class="absolute left-0 h-[4px] bg-[#dce775] shadow-[0_1px_5px_rgba(220,231,117,0.8)] origin-left"
                   >
-                    <!-- Percentage Ticks injected via JS -->
                     <div id="ruler-percent-ticks"></div>
 
                     <!-- 100% Draggable Handle -->
                     <div
                       id="ruler-handle"
-                      class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-4 h-4 rounded-full bg-[#dce775]/20 border-2 border-[#dce775] shadow-[0_0_8px_rgba(220,231,117,0.8)] cursor-ew-resize flex items-center justify-center z-30 hover:scale-110 transition-transform touch-none"
+                      class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-8 h-8 rounded-full bg-[#dce775]/20 border-4 border-[#dce775] shadow-[0_0_8px_rgba(220,231,117,0.8)] cursor-ew-resize flex items-center justify-center z-30 hover:scale-110 transition-transform touch-none"
                     >
                       <div
-                        class="w-1.5 h-1.5 rounded-full bg-[#cddc39] shadow-[0_0_6px_2px_#cddc39]"
+                        class="w-3 h-3 rounded-full bg-[#cddc39] shadow-[0_0_6px_2px_#cddc39]"
                       ></div>
                       <svg
-                        class="w-2.5 h-2.5 text-[#dce775] absolute left-[-8px]"
+                        class="w-4 h-4 text-[#dce775] absolute -left-3"
                         stroke-width="3"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -257,7 +304,7 @@
                         <path d="m15 18-6-6 6-6" />
                       </svg>
                       <svg
-                        class="w-2.5 h-2.5 text-[#dce775] absolute right-[-8px]"
+                        class="w-4 h-4 text-[#dce775] absolute -right-3"
                         stroke-width="3"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -272,14 +319,13 @@
                   </div>
                 </div>
 
-                <div class="h-4"></div>
+                <div class="flex-1"></div>
 
                 <!-- Bottom Track (Dollars) -->
-                <div class="relative h-12 flex items-start">
+                <div class="relative h-[25%] flex items-start">
                   <div
-                    class="absolute left-0 top-0 w-full h-[3px] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.5)]"
+                    class="absolute left-0 top-0 w-full h-[4px] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.5)]"
                   >
-                    <!-- Pound Ticks injected via JS -->
                     <div id="ruler-dollar-ticks"></div>
                   </div>
                 </div>
@@ -288,38 +334,52 @@
           </div>
         </div>
 
-        <!-- Bottom Input Area -->
+        <!-- Bottom Input Area (20% Height) -->
         <div
-          class="h-24 bg-white flex items-center px-8 gap-4 relative z-30 shadow-[0_-5px_15px_rgba(0,0,0,0.1)]"
+          class="h-[20%] bg-white flex flex-row items-center justify-between px-12 py-0 gap-6 relative shadow-[0_-5px_15px_rgba(0,0,0,0.1)] z-30"
         >
-          <div id="question-text" class="text-2xl text-gray-700 font-semibold">
-            Find the discount:
+          <div class="flex flex-col flex-1 text-left">
+            <div
+              id="question-text"
+              class="text-3xl text-gray-800 font-black tracking-wide"
+            >
+              Find the discount:
+            </div>
+            <div
+              id="question-hint"
+              class="text-base text-blue-600 font-bold mt-1 leading-tight"
+            >
+              Hint: Find the discount amount.
+            </div>
           </div>
 
           <div
             id="input-container"
             onclick="openNumpad(event)"
-            class="flex items-center text-3xl font-bold text-gray-800 bg-gray-100 border-2 border-gray-300 px-4 py-2 rounded-lg cursor-pointer min-w-[120px] shadow-inner relative transition-colors"
+            class="flex items-center justify-center w-auto text-4xl font-bold text-gray-800 bg-gray-100 border-2 border-gray-300 px-6 py-3 rounded-lg cursor-pointer min-w-[8.75rem] shadow-inner relative transition-colors"
           >
-            $ <span id="input-value-display" class="ml-2 text-teal-600">?</span>
-            <span
-              id="input-cursor"
-              class="animate-pulse ml-1 hidden text-teal-600"
-              >|</span
-            >
+            <div class="flex items-center">
+              $
+              <span id="input-value-display" class="ml-3 text-teal-600">?</span>
+              <span
+                id="input-cursor"
+                class="animate-pulse ml-1.5 hidden text-teal-600"
+                >|</span
+              >
+            </div>
 
-            <!-- Numpad Popup -->
+            <!-- Numpad Popup - perfectly centered above the input button -->
             <div
               id="numpad-popup"
-              class="hidden absolute bottom-full left-0 mb-4 bg-teal-600 p-4 rounded-xl shadow-2xl border-4 border-teal-800 w-64 z-50 transform origin-bottom-left transition-all duration-200 cursor-default"
+              class="hidden absolute bottom-full left-1/2 -translate-x-1/2 mb-4 bg-teal-600 p-4 rounded-xl shadow-2xl border-4 border-teal-800 w-[17.5rem] transform origin-bottom transition-all duration-200 cursor-default"
               onclick="event.stopPropagation()"
             >
               <button
                 onclick="closeNumpad()"
-                class="absolute -top-3 -left-3 bg-white text-teal-800 rounded-full p-1 shadow-md border-2 border-teal-800 hover:bg-gray-100 transition-transform active:scale-95"
+                class="absolute -top-4 -right-4 bg-white text-teal-800 rounded-full p-1.5 shadow-md border-2 border-teal-800 hover:bg-gray-100 transition-transform active:scale-95"
               >
                 <svg
-                  class="w-4 h-4 rotate-45"
+                  class="w-5 h-5 rotate-45"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="none"
@@ -339,7 +399,7 @@
                   class="col-span-1 bg-teal-500 hover:bg-teal-400 text-white rounded-full p-2 flex items-center justify-center shadow-md active:translate-y-1 transition-transform"
                 >
                   <svg
-                    class="w-5 h-5"
+                    class="w-6 h-6"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="none"
@@ -353,17 +413,16 @@
                     <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
                   </svg>
                 </button>
-                <!-- Numbers injected via JS -->
                 <script>
                   [1, 2, 3, 4, 5, 6, 7, 8, 9, ".", 0].forEach((num) => {
                     document.write(
-                      `<button onclick="handleNumpad('${num}')" class="bg-teal-800 hover:bg-teal-700 text-white font-bold text-xl rounded-full aspect-square flex items-center justify-center shadow-md border border-teal-600 active:translate-y-1 transition-transform">${num}</button>`,
+                      `<button onclick="handleNumpad('${num}')" class="bg-teal-800 hover:bg-teal-700 text-white font-bold text-2xl rounded-full aspect-square flex items-center justify-center shadow-md border border-teal-600 active:translate-y-1 transition-transform">${num}</button>`,
                     );
                   });
                 </script>
                 <button
                   onclick="handleNumpad('done')"
-                  class="col-span-4 bg-green-500 hover:bg-green-400 text-white font-bold rounded-full py-2 shadow-md active:translate-y-1 transition-transform flex items-center justify-center gap-2"
+                  class="col-span-4 bg-green-500 hover:bg-green-400 text-white font-bold rounded-full py-2.5 shadow-md active:translate-y-1 transition-transform flex items-center justify-center gap-2 text-lg"
                 >
                   DONE
                   <svg
@@ -385,13 +444,13 @@
         </div>
       </div>
 
-      <!-- END SCREEN (Hidden initially) -->
+      <!-- END SCREEN -->
       <div
         id="end-screen"
         class="hidden absolute inset-0 bg-[#4a6b5d] flex items-center justify-center p-4 z-40"
       >
         <div
-          class="bg-[#8b5a2b] p-8 rounded-3xl shadow-2xl border-4 border-[#654321] text-center max-w-lg w-full relative overflow-hidden"
+          class="bg-[#8b5a2b] p-10 rounded-3xl shadow-2xl border-4 border-[#654321] text-center max-w-xl w-full relative overflow-hidden"
         >
           <div
             class="absolute inset-0 opacity-20 pointer-events-none"
@@ -404,16 +463,16 @@
             "
           ></div>
           <div class="relative z-10 flex flex-col items-center">
-            <div class="flex justify-center gap-2 mb-6" id="stars-container">
+            <div class="flex justify-center gap-3 mb-8" id="stars-container">
               <script>
                 for (let i = 0; i < 5; i++)
                   document.write(
-                    `<svg class="w-12 h-12 text-yellow-400 fill-yellow-400 drop-shadow-lg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+                    `<svg class="w-14 h-14 text-yellow-400 fill-yellow-400 drop-shadow-lg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
                   );
               </script>
             </div>
             <div
-              class="bg-white/90 p-6 rounded-full shadow-inner mb-6 border-4 border-blue-200"
+              class="bg-white/90 p-6 rounded-full shadow-inner mb-8 border-4 border-blue-200"
             >
               <svg
                 class="w-24 h-24 text-blue-400 drop-shadow-md"
@@ -433,13 +492,13 @@
               </svg>
             </div>
             <h1
-              class="text-4xl font-bold text-white mb-8 drop-shadow-md bg-red-500 py-2 px-8 rounded-full border-b-4 border-red-700"
+              class="text-4xl font-bold text-white mb-10 drop-shadow-md bg-red-500 py-2 px-10 rounded-full border-b-6 border-red-700"
             >
               Awesome!
             </h1>
             <button
               onclick="restartGame()"
-              class="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full font-bold text-xl transition-transform active:scale-95 shadow-[0_4px_0_rgb(21,128,61)]"
+              class="flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-full font-bold text-xl transition-transform active:scale-95 shadow-[0_5px_0_rgb(21,128,61)]"
             >
               <svg
                 class="w-6 h-6"
@@ -465,7 +524,7 @@
 
     <!-- Audio Elements -->
     <audio id="sound-wrong" src="wrong.mp3" preload="auto"></audio>
-    <audio id="sound-popper" src="congrats.mp3" preload="auto"></audio>
+    <audio id="sound-popper" src="popper.mp3" preload="auto"></audio>
     <audio id="sound-congrats" src="congrats.mp3" preload="auto"></audio>
 
     <!-- Javascript Logic -->
@@ -499,13 +558,21 @@
         gameScreen: document.getElementById("game-screen"),
         endScreen: document.getElementById("end-screen"),
         levelIndicator: document.getElementById("level-indicator"),
+
+        // Overlays & UI Text
+        onScreenTitle: document.getElementById("on-screen-title"),
+        onScreenDesc: document.getElementById("on-screen-desc"),
+        questionText: document.getElementById("question-text"),
+        questionHint: document.getElementById("question-hint"),
+
+        // Scene Items
         toyImage: document.getElementById("toy-image"),
         toyFallback: document.getElementById("toy-fallback"),
         priceLabel: document.getElementById("price-label"),
         priceDisplay: document.getElementById("price-display"),
-        discountDisplay: document.getElementById("discount-display"),
-        questionText: document.getElementById("question-text"),
+        tagDisplay: document.getElementById("tag-display"),
 
+        // Input
         inputContainer: document.getElementById("input-container"),
         inputValueDisplay: document.getElementById("input-value-display"),
         inputCursor: document.getElementById("input-cursor"),
@@ -539,26 +606,49 @@
         for (let i = 0; i < count; i++) {
           const item =
             ITEM_IMAGES[Math.floor(Math.random() * ITEM_IMAGES.length)];
-          // Generate prices in multiples of 5 to allow decimals like 12.5 or 1.5
-          const originalPrice = Math.floor(Math.random() * 29 + 2) * 5;
-          // Generate discount from 10% up to 70%
-          const discountPercent = Math.floor(Math.random() * 7 + 1) * 10;
-          const discountAmount = Number(
-            ((originalPrice * discountPercent) / 100).toFixed(2),
-          );
-          const discountedPrice = Number(
-            (originalPrice - discountAmount).toFixed(2),
-          );
-          const isDiscountedGiven = Math.random() > 0.5;
 
-          newQs.push({
-            toyName: item.name,
-            imageUrl: item.url,
-            priceLabel: isDiscountedGiven ? "Discounted price" : "Price",
-            displayPrice: isDiscountedGiven ? discountedPrice : originalPrice,
-            discountPercent: discountPercent,
-            expectedAnswer: discountAmount,
-          });
+          // Original price: $20 to $150 in multiples of 10 for clean, simple math!
+          const basePrice = Math.floor(Math.random() * 14 + 2) * 10;
+
+          // Percentage: 10% to 90% in multiples of 10
+          const percent = Math.floor(Math.random() * 9 + 1) * 10;
+
+          // Because both are multiples of 10, the result is ALWAYS a whole number (no decimals)
+          const discountAmount = (basePrice * percent) / 100;
+          const discountedPrice = basePrice - discountAmount;
+
+          // 50/50 Chance between Find Discount Amount and Find Original Price
+          const isFindDiscountAmount = Math.random() > 0.5;
+
+          if (isFindDiscountAmount) {
+            newQs.push({
+              type: "find_discount",
+              toyName: item.name,
+              imageUrl: item.url,
+              priceLabel: "Price",
+              displayPrice: basePrice,
+              tagText: `Discount: ${percent}%`,
+              questionTitle: "Find the discount:",
+              questionHint: `Hint: Find the ${percent}% discount amount using the ruler.`,
+              expectedAnswer: discountAmount,
+              modalTitle: "New Task!",
+              modalDesc: `The item costs <b>$${basePrice}</b> and has a <b>${percent}% discount</b>.<br/>Use the ruler to find out exactly how much money you save!`,
+            });
+          } else {
+            newQs.push({
+              type: "find_original",
+              toyName: item.name,
+              imageUrl: item.url,
+              priceLabel: "Discounted Price",
+              displayPrice: discountedPrice,
+              tagText: `Discount: ${percent}%`,
+              questionTitle: "Find the original price:",
+              questionHint: `Hint: The sale price is ${100 - percent}% of the original. Find 100%!`,
+              expectedAnswer: basePrice,
+              modalTitle: "New Task!",
+              modalDesc: `The item is on sale for <b>$${discountedPrice}</b> after a <b>${percent}% discount</b>.<br/>Use the ruler to find the original price (100%) before the sale!`,
+            });
+          }
         }
         return newQs;
       }
@@ -568,11 +658,21 @@
         inputValue = "";
         updateInputDisplay();
 
-        // Reset UI
+        // Set On-Screen Instruction Information
+        DOM.onScreenTitle.innerText = level.modalTitle;
+        DOM.onScreenDesc.innerHTML = level.modalDesc;
+
+        // Set UI details
         DOM.levelIndicator.innerText = `Level ${currentLevelIndex + 1} of ${TOTAL_QUESTIONS}`;
         DOM.priceLabel.innerText = level.priceLabel + ":";
         DOM.priceDisplay.innerText = "$" + level.displayPrice;
-        DOM.discountDisplay.innerText = `Discount: ${level.discountPercent}%`;
+
+        DOM.tagDisplay.innerText = level.tagText;
+        DOM.tagDisplay.className =
+          "bg-green-500 text-white text-sm font-bold py-1.5 px-3 rounded-sm transform -rotate-2 shadow-md inline-block whitespace-nowrap";
+
+        DOM.questionText.innerText = level.questionTitle;
+        DOM.questionHint.innerText = level.questionHint;
 
         // Image handling with foolproof DOM toggle fallback
         DOM.toyImage.classList.add("hidden");
@@ -602,7 +702,6 @@
 
         maxPounds = Math.max(60, newMax);
         rulerVal = initVal;
-
         renderRuler();
       }
 
@@ -627,10 +726,23 @@
         DOM.inputContainer.classList.remove("ring-2", "ring-teal-400");
       }
 
-      // Close numpad when clicking outside
       document.body.addEventListener("click", (e) => {
-        if (!DOM.numpadPopup.classList.contains("hidden")) {
-          closeNumpad();
+        if (!DOM.numpadPopup.classList.contains("hidden")) closeNumpad();
+      });
+
+      // Link keyboard input
+      document.addEventListener("keydown", (e) => {
+        if (DOM.gameScreen.classList.contains("hidden")) return; // ignore on end screen
+
+        const key = e.key;
+        if (/^[0-9]$/.test(key)) {
+          handleNumpad(key);
+        } else if (key === "." || key === ",") {
+          handleNumpad(".");
+        } else if (key === "Backspace") {
+          handleNumpad("del");
+        } else if (key === "Enter") {
+          handleNumpad("done");
         }
       });
 
@@ -641,13 +753,8 @@
           checkAnswer();
           return;
         } else {
-          // Prevent multiple decimals
           if (val === "." && inputValue.includes(".")) return;
-
-          // Allow slightly longer strings for decimals
-          if (inputValue.length < 6) {
-            inputValue += val;
-          }
+          if (inputValue.length < 6) inputValue += val;
         }
         updateInputDisplay();
       }
@@ -663,7 +770,6 @@
         }
 
         const level = questions[currentLevelIndex];
-        // Use parseFloat to accurately compare decimal inputs
         if (parseFloat(inputValue) === level.expectedAnswer) {
           closeNumpad();
           triggerPartyPopper();
@@ -677,13 +783,9 @@
             }
           }, 3000);
         } else {
-          // Play Wrong Sound
           DOM.soundWrong.currentTime = 0;
-          DOM.soundWrong
-            .play()
-            .catch((e) => console.log("Audio play error:", e));
+          DOM.soundWrong.play().catch((e) => console.log("Audio error:", e));
 
-          // Shake Error
           DOM.inputContainer.classList.add("shake-animation");
           setTimeout(() => {
             DOM.inputContainer.classList.remove("shake-animation");
@@ -698,13 +800,10 @@
         DOM.gameScreen.classList.add("hidden");
         DOM.endScreen.classList.remove("hidden");
 
-        // Play Congrats Sound
         DOM.soundCongrats.currentTime = 0;
-        DOM.soundCongrats
-          .play()
-          .catch((e) => console.log("Audio play error:", e));
+        DOM.soundCongrats.play().catch((e) => console.log("Audio error:", e));
 
-        triggerPartyPopper(true); // Continuous party
+        triggerPartyPopper(true);
       }
 
       // --- Ruler Logic ---
@@ -714,7 +813,7 @@
         updateDrag(e);
         document.addEventListener("pointermove", updateDrag);
         document.addEventListener("pointerup", handlePointerUp);
-        e.preventDefault(); // Prevent touch scroll
+        e.preventDefault();
       }
 
       function handlePointerUp() {
@@ -725,7 +824,6 @@
 
         isAnimating = true;
 
-        // Auto frame
         let ideal = rulerVal * 1.2;
         if (ideal < 10) ideal = 10;
 
@@ -742,8 +840,10 @@
         if (!isDragging) return;
         const rect = DOM.rulerTrackArea.getBoundingClientRect();
 
-        // Allow active tracking area matching React padding
-        const trackWidthPx = rect.width - 30;
+        const rem = parseFloat(
+          getComputedStyle(document.documentElement).fontSize,
+        );
+        const trackWidthPx = rect.width - 1.875 * rem;
 
         let x = e.clientX || (e.touches && e.touches[0].clientX);
         if (!x) return;
@@ -751,11 +851,10 @@
         x = x - rect.left;
         let percentX = x / trackWidthPx;
 
-        // Dynamic Pan Right
         if (percentX > 0.95) {
           maxPounds *= 1.03;
           percentX = 0.95;
-          renderRuler(); // Re-render ticks continuously when panning
+          renderRuler();
         }
         if (percentX < 0.05) percentX = 0.05;
 
@@ -763,7 +862,6 @@
         updateRulerVisualsOnly();
       }
 
-      // Attach listeners
       DOM.rulerHandle.addEventListener("pointerdown", handlePointerDown);
       DOM.rulerTrackArea.addEventListener("pointerdown", (e) => {
         if (e.target !== DOM.rulerHandle) handlePointerDown(e);
@@ -790,8 +888,7 @@
         } else if (max <= 250) {
           majorStep = 20;
           minorStep = 10;
-        } // Adjusted for exact 2 sub-divisions
-        else {
+        } else {
           majorStep = 50;
           minorStep = 10;
         }
@@ -805,11 +902,9 @@
       }
 
       function renderRuler() {
-        // Setup transition class
         const transClass = isAnimating ? "ruler-animating" : "";
-
-        // Update Top Track Ticks
         const topTrackWidthPercent = (rulerVal / maxPounds) * 100;
+
         let visiblePercentTicks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
         if (topTrackWidthPercent < 30) visiblePercentTicks = [0, 50, 100];
         else if (topTrackWidthPercent < 60)
@@ -820,20 +915,19 @@
           const isVisible = visiblePercentTicks.includes(tick);
           percentHtml += `
                     <div class="absolute top-1/2 -translate-y-1/2 flex flex-col items-center transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"}" style="left: ${tick}%; transform: translate(-50%, -50%)">
-                        <div class="text-[#dce775] font-bold text-sm mb-3 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">${tick}%</div>
-                        <div class="w-[2px] h-4 bg-[#dce775] shadow-[0_1px_3px_rgba(220,231,117,0.6)]"></div>
+                        <div class="text-[#dce775] font-bold text-base mb-3 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">${tick}%</div>
+                        <div class="w-[3px] h-4 bg-[#dce775] shadow-[0_1px_3px_rgba(220,231,117,0.6)]"></div>
                     </div>`;
         });
         DOM.percentTicks.innerHTML = percentHtml;
 
-        // Update Bottom Track Ticks
         const { majorTicks, minorTicks } = getPoundTicks(maxPounds);
         let dollarHtml = "";
         minorTicks.forEach((i) => {
           dollarHtml += `<div class="absolute top-0 flex flex-col items-center ${transClass}" style="left: ${(i / maxPounds) * 100}%; transform: translateX(-50%)"><div class="w-[2px] bg-white/70 shadow-[0_1px_2px_rgba(0,0,0,0.3)] h-2"></div></div>`;
         });
         majorTicks.forEach((i) => {
-          dollarHtml += `<div class="absolute top-0 flex flex-col items-center ${transClass}" style="left: ${(i / maxPounds) * 100}%; transform: translateX(-50%)"><div class="w-[2px] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.5)] h-4"></div><div class="text-white font-bold text-lg mt-1 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] whitespace-nowrap">${i}</div></div>`;
+          dollarHtml += `<div class="absolute top-0 flex flex-col items-center ${transClass}" style="left: ${(i / maxPounds) * 100}%; transform: translateX(-50%)"><div class="w-[3px] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.5)] h-5"></div><div class="text-white font-bold text-xl mt-2 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] whitespace-nowrap">${i}</div></div>`;
         });
         DOM.dollarTicks.innerHTML = dollarHtml;
 
@@ -851,11 +945,8 @@
 
       // --- Party Popper ---
       function triggerPartyPopper(continuous = false) {
-        // Play Popper Sound
         DOM.soundPopper.currentTime = 0;
-        DOM.soundPopper
-          .play()
-          .catch((e) => console.log("Audio play error:", e));
+        DOM.soundPopper.play().catch((e) => console.log("Audio error:", e));
 
         const colors = [
           "#f44336",
