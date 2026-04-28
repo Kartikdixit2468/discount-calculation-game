@@ -471,90 +471,6 @@
               </div>
             </div>
           </div>
-
-          <!-- CALCULATION ANIMATION OVERLAY (Only covers Top Shelf) -->
-          <div
-            id="calc-overlay"
-            class="hidden absolute inset-0 bg-[#2c3e50]/80 backdrop-blur-sm flex flex-col items-center justify-center z-[50] opacity-0 transition-opacity duration-300"
-          >
-            <div class="flex flex-col items-center w-full px-4">
-              <!-- Step 1: Breakdown (Markers fly up from Ruler) -->
-              <div
-                id="anim-badges-row"
-                class="opacity-0 flex items-center gap-2 md:gap-4 text-center transition-all duration-700 ease-out"
-              >
-                <!-- 100% Badge -->
-                <div
-                  class="bg-[#4a2e15] border-[2px] border-[#cddc39] rounded-xl px-4 py-2 md:px-6 md:py-3 shadow-xl flex items-center gap-2"
-                >
-                  <span class="text-[#cddc39] font-black text-xl md:text-3xl"
-                    >100% ➔ $<span id="anim-cp">0</span></span
-                  >
-                </div>
-
-                <div class="text-white/60 font-black text-2xl md:text-4xl">
-                  +
-                </div>
-
-                <!-- Profit Badge -->
-                <div
-                  class="bg-[#4a2e15] border-[2px] border-yellow-400 rounded-xl px-4 py-2 md:px-6 md:py-3 shadow-xl flex items-center gap-2"
-                >
-                  <span class="text-yellow-400 font-black text-xl md:text-3xl"
-                    ><span id="anim-profit-pct">0</span>% ➔ $<span
-                      id="anim-profit"
-                      >0</span
-                    ></span
-                  >
-                </div>
-              </div>
-
-              <!-- Step 2: Addition Equation -->
-              <div
-                id="anim-equation-row"
-                class="mt-4 md:mt-6 opacity-0 bg-white rounded-2xl px-6 py-3 md:px-10 md:py-4 shadow-[0_15px_30px_rgba(0,0,0,0.5)] flex items-center justify-center flex-wrap gap-2 md:gap-4 transition-all duration-700 ease-out"
-              >
-                <span
-                  class="text-[#27ae60] font-black text-2xl md:text-5xl drop-shadow-sm"
-                  >$<span id="anim-add-cp">0</span></span
-                >
-                <span class="text-gray-300 font-black text-2xl md:text-5xl"
-                  >+</span
-                >
-                <span
-                  class="text-[#f1c40f] font-black text-2xl md:text-5xl drop-shadow-sm"
-                  >$<span id="anim-add-profit">0</span></span
-                >
-                <span class="text-gray-300 font-black text-2xl md:text-5xl"
-                  >=</span
-                >
-                <span
-                  class="text-[#2980b9] font-black text-3xl md:text-6xl drop-shadow-md"
-                  >$<span id="anim-calc-sp">0</span></span
-                >
-              </div>
-
-              <!-- Step 3: Comparison -->
-              <div
-                id="anim-comparison-row"
-                class="mt-4 md:mt-6 opacity-0 px-6 py-3 md:px-10 md:py-4 rounded-2xl border-[3px] md:border-[4px] bg-[#2c3e50] shadow-2xl flex items-center justify-center gap-4 transition-all duration-700 ease-out"
-              >
-                <span
-                  class="text-[#3498db] font-black text-2xl md:text-5xl drop-shadow-sm"
-                  >$<span id="anim-cmp-calc">0</span></span
-                >
-                <span
-                  id="anim-cmp-operator"
-                  class="font-black text-3xl md:text-6xl drop-shadow-md"
-                  >≠</span
-                >
-                <span
-                  class="text-gray-300 font-black text-2xl md:text-5xl drop-shadow-sm"
-                  >$<span id="anim-cmp-target">0</span></span
-                >
-              </div>
-            </div>
-          </div>
         </div>
 
         <!-- Ruler Drawer Area (45% Height) -->
@@ -615,6 +531,17 @@
                 <div
                   class="relative flex flex-col justify-between h-[3rem] md:h-[4.5rem] w-full my-auto"
                 >
+                  <!-- Dynamic Equation Popup (Positioned above segment after slide) -->
+                  <div
+                    id="ruler-equation-popup"
+                    class="absolute top-0 -translate-y-[5.5rem] md:-translate-y-[7.5rem] flex justify-center items-center z-[55] pointer-events-none opacity-0 transition-opacity duration-500 overflow-visible"
+                  >
+                    <div
+                      id="ruler-equation-content"
+                      class="text-white px-3 py-1.5 md:px-5 md:py-2.5 rounded-xl border-2 md:border-[3px] shadow-2xl text-xs md:text-xl font-black tracking-wide whitespace-nowrap flex items-center gap-1.5 md:gap-2"
+                    ></div>
+                  </div>
+
                   <!-- Dynamic Profit Connector (Horizontal Line joined from 0% start) -->
                   <div
                     id="profit-connector"
@@ -654,7 +581,8 @@
                       class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full pt-8 md:pt-12 z-30"
                     >
                       <div
-                        class="bg-[#4a2e15] text-yellow-400 font-black text-[0.65rem] md:text-[1.1rem] px-2 md:px-4 py-0.5 md:py-1 rounded-lg border-[1.5px] md:border-2 border-yellow-500 shadow-lg whitespace-nowrap tracking-wide"
+                        id="profit-marker-value-bg"
+                        class="bg-[#4a2e15] text-yellow-400 font-black text-[0.65rem] md:text-[1.1rem] px-2 md:px-4 py-0.5 md:py-1 rounded-lg border-[1.5px] md:border-2 border-yellow-500 shadow-lg whitespace-nowrap tracking-wide transition-colors duration-300"
                       >
                         <span id="profit-marker-value">$125</span>
                       </div>
@@ -929,20 +857,8 @@
         submitBtn: document.getElementById("submit-btn"),
         hintMarker: document.getElementById("hint-marker"),
 
-        // Animation Overlay Elements
-        calcOverlay: document.getElementById("calc-overlay"),
-        animCp: document.getElementById("anim-cp"),
-        animProfitPct: document.getElementById("anim-profit-pct"),
-        animProfit: document.getElementById("anim-profit"),
-        animAddCp: document.getElementById("anim-add-cp"),
-        animAddProfit: document.getElementById("anim-add-profit"),
-        animCalcSp: document.getElementById("anim-calc-sp"),
-        animCmpCalc: document.getElementById("anim-cmp-calc"),
-        animOperator: document.getElementById("anim-cmp-operator"),
-        animCmpTarget: document.getElementById("anim-cmp-target"),
-        step1: document.getElementById("anim-badges-row"),
-        step2: document.getElementById("anim-equation-row"),
-        step3: document.getElementById("anim-comparison-row"),
+        rulerEquationPopup: document.getElementById("ruler-equation-popup"),
+        rulerEquationContent: document.getElementById("ruler-equation-content"),
 
         successPopup: document.getElementById("success-popup"),
         popupSp: document.getElementById("popup-sp"),
@@ -958,6 +874,7 @@
         profitMarkerLine: document.getElementById("profit-marker-line"),
         profitPercentText: document.getElementById("profit-percent-text"),
         profitMarkerValue: document.getElementById("profit-marker-value"),
+        profitMarkerValueBg: document.getElementById("profit-marker-value-bg"),
 
         tutorialHand: document.getElementById("tutorial-hand"),
 
@@ -1143,90 +1060,6 @@
         init();
       }
 
-      async function playCalculationAnimation(
-        cp,
-        profitPct,
-        profitAmount,
-        calcSp,
-        targetSp,
-        isCorrect,
-      ) {
-        // Populate DOM elements
-        DOM.animCp.innerText = cp;
-        DOM.animProfitPct.innerText = profitPct;
-        DOM.animProfit.innerText = profitAmount;
-
-        DOM.animAddCp.innerText = cp;
-        DOM.animAddProfit.innerText = profitAmount;
-        DOM.animCalcSp.innerText = calcSp;
-
-        DOM.animCmpCalc.innerText = calcSp;
-        DOM.animCmpTarget.innerText = targetSp;
-
-        if (isCorrect) {
-          DOM.animOperator.innerText = "==";
-          DOM.animOperator.classList.remove("text-red-500");
-          DOM.animOperator.classList.add("text-green-500");
-          DOM.step3.classList.remove("border-[#c0392b]");
-          DOM.step3.classList.add("border-[#27ae60]");
-        } else {
-          DOM.animOperator.innerText = "≠";
-          DOM.animOperator.classList.remove("text-green-500");
-          DOM.animOperator.classList.add("text-red-500");
-          DOM.step3.classList.remove("border-[#27ae60]");
-          DOM.step3.classList.add("border-[#c0392b]");
-        }
-
-        // Show overlay base inside top shelf
-        DOM.calcOverlay.classList.remove("hidden");
-        void DOM.calcOverlay.offsetWidth; // Reflow
-        DOM.calcOverlay.classList.remove("opacity-0");
-
-        // Reset steps
-        [DOM.step1, DOM.step2, DOM.step3].forEach((el) => {
-          el.classList.remove("opacity-100", "translate-y-0", "scale-100");
-          el.classList.add("opacity-0");
-        });
-
-        // Prepare them to fly up
-        DOM.step1.classList.add("translate-y-[25vh]", "scale-75");
-        DOM.step2.classList.add("translate-y-[15vh]", "scale-90");
-        DOM.step3.classList.add("translate-y-[10vh]", "scale-90");
-
-        // Animate sequence vertically mimicking the markers flying up
-        await new Promise((r) => setTimeout(r, 400));
-        DOM.step1.classList.remove(
-          "opacity-0",
-          "translate-y-[25vh]",
-          "scale-75",
-        );
-        DOM.step1.classList.add("opacity-100", "translate-y-0", "scale-100");
-
-        await new Promise((r) => setTimeout(r, 800));
-        DOM.step2.classList.remove(
-          "opacity-0",
-          "translate-y-[15vh]",
-          "scale-90",
-        );
-        DOM.step2.classList.add("opacity-100", "translate-y-0", "scale-100");
-
-        await new Promise((r) => setTimeout(r, 1000));
-        DOM.step3.classList.remove(
-          "opacity-0",
-          "translate-y-[10vh]",
-          "scale-90",
-        );
-        DOM.step3.classList.add("opacity-100", "translate-y-0", "scale-100");
-
-        // Let user digest visual math result before continuing
-        await new Promise((r) => setTimeout(r, 2400));
-
-        // Hide overlay smoothly
-        DOM.calcOverlay.classList.add("opacity-0");
-        await new Promise((r) => setTimeout(r, 300));
-        DOM.calcOverlay.classList.add("hidden");
-      }
-
       async function checkWinCondition() {
         if (isTutorialActive || isAnimatingCalculation) return;
 
@@ -1236,32 +1069,84 @@
         // Snapped value calculation
         const snappedVal = Math.round(rulerVal / 10) * 10;
 
-        // Match calculation logic matching visually what they see
         const calculatedProfit = Math.round(
           (snappedVal * level.profitPercent) / 100,
         );
         const calculatedSP = snappedVal + calculatedProfit;
-        const targetSP = level.displayPrice; // We asked them to match the Selling Price
+        const targetSP = level.displayPrice;
 
+        // --- SLOW ANIMATION SEQUENCE: Sliding the Profit Marker ---
+
+        // 1. Auto-Zoom: Check if the new combined position will fall off the right edge
+        const neededMax = calculatedSP * 1.15; // 15% buffer
+        if (neededMax > maxPounds) {
+          isAnimatingCalculation = false;
+          maxPounds = neededMax;
+          renderRuler();
+          await new Promise((r) => setTimeout(r, 1000)); // Wait for slow zoom
+          isAnimatingCalculation = true;
+        }
+
+        // 2. Prepare SLOW CSS Transitions for the slide
+        DOM.profitMarkerLine.style.transition =
+          "left 2.5s cubic-bezier(0.4, 0, 0.2, 1)";
+        DOM.profitConnector.style.transition =
+          "left 2.5s cubic-bezier(0.4, 0, 0.2, 1), width 2.5s cubic-bezier(0.4, 0, 0.2, 1)";
+
+        // 3. Change text slightly to indicate addition operation (+25%)
+        DOM.profitPercentText.innerText = "+" + level.profitPercent + "%";
+        DOM.profitMarkerValue.innerText = "+$" + calculatedProfit;
+
+        await new Promise((r) => requestAnimationFrame(r)); // Yield render
+
+        // 4. Calculate new positions
+        let cpPercent = (snappedVal / maxPounds) * 100;
+        let profitPercent = (calculatedProfit / maxPounds) * 100;
+        let targetPercentX = cpPercent + profitPercent;
+
+        // Apply SLOW slide!
+        DOM.profitMarkerLine.style.left = `${targetPercentX}%`;
+        DOM.profitConnector.style.left = `${cpPercent}%`;
+        DOM.profitConnector.style.width = `${profitPercent}%`;
+
+        // Wait for slow physical slide to finish
+        await new Promise((r) => setTimeout(r, 2600));
+
+        // 5. Expand TOP label (Equation Popup) to show the math beautifully
         const isCorrect = snappedVal === level.expectedCP;
 
-        // Run the intermediate animation flying out from ruler into top shelf
-        await playCalculationAnimation(
-          snappedVal,
-          level.profitPercent,
-          calculatedProfit,
-          calculatedSP,
-          targetSP,
-          isCorrect,
-        );
+        let equationHTML = `
+            <span class="bg-[#cddc39] text-[#4a2e15] px-1.5 py-0.5 md:px-2 md:py-1 rounded-md shadow-sm">$${snappedVal}</span> 
+            <span class="text-white mx-0.5 md:mx-1">+</span> 
+            <span class="text-yellow-400 drop-shadow-sm">$${calculatedProfit}</span> 
+            <span class="text-white mx-0.5 md:mx-1">=</span> 
+        `;
 
         if (isCorrect) {
+          equationHTML += `<span class="text-green-400 drop-shadow-sm">$${calculatedSP}</span>`;
+          DOM.rulerEquationContent.className =
+            "text-white px-3 py-1.5 md:px-5 md:py-2.5 rounded-xl border-2 md:border-[3px] border-green-400 bg-[#1e3a2f] shadow-2xl text-xs md:text-xl font-black tracking-wide whitespace-nowrap flex items-center gap-1.5 md:gap-2";
+        } else {
+          equationHTML += `<span class="text-red-400 drop-shadow-sm">$${calculatedSP} &ne; $${targetSP}</span>`;
+          DOM.rulerEquationContent.className =
+            "text-white px-3 py-1.5 md:px-5 md:py-2.5 rounded-xl border-2 md:border-[3px] border-red-500 bg-[#3a1e1e] shadow-2xl text-xs md:text-xl font-black tracking-wide whitespace-nowrap flex items-center gap-1.5 md:gap-2";
+        }
+
+        DOM.rulerEquationContent.innerHTML = equationHTML;
+
+        // Position it perfectly centered over the added segment
+        DOM.rulerEquationPopup.style.left = `${cpPercent}%`;
+        DOM.rulerEquationPopup.style.width = `${profitPercent}%`;
+        DOM.rulerEquationPopup.classList.remove("opacity-0");
+
+        // Give player a solid 3 seconds to digest the math above the ruler
+        await new Promise((r) => setTimeout(r, 3000));
+
+        // 6. Resolve Popups based on Win/Loss
+        if (isCorrect) {
           isLevelComplete = true;
-          rulerVal = snappedVal;
-          updateRulerVisualsOnly();
           triggerPartyPopper();
 
-          // Prepare and show Success Modal
           DOM.popupCp.innerText = level.expectedCP;
           DOM.popupProfit.innerText = calculatedProfit;
           DOM.popupSp.innerText = targetSP;
@@ -1278,7 +1163,6 @@
           DOM.successPopup.querySelector("div").classList.remove("scale-90");
           DOM.successPopup.querySelector("div").classList.add("scale-100");
         } else {
-          // Play wrong sound
           DOM.soundWrong.currentTime = 0;
           DOM.soundWrong.play().catch((e) => console.log("Audio error:", e));
 
@@ -1286,7 +1170,6 @@
           void DOM.submitBtn.offsetWidth;
           DOM.submitBtn.classList.add("animate-shake");
 
-          // Prepare and show Failure Modal
           DOM.failCalcSp.innerText = calculatedSP;
           DOM.failTargetSp.innerText = targetSP;
 
@@ -1296,8 +1179,6 @@
           DOM.failurePopup.querySelector("div").classList.remove("scale-90");
           DOM.failurePopup.querySelector("div").classList.add("scale-100");
         }
-
-        isAnimatingCalculation = false;
       }
 
       function hideFailurePopup() {
@@ -1308,7 +1189,14 @@
         setTimeout(() => {
           DOM.failurePopup.classList.add("hidden");
 
-          // Blink Hint Marker after popup closes to guide them
+          // Reset Ruler Anim logic & hide equation
+          isAnimatingCalculation = false;
+          DOM.rulerEquationPopup.classList.add("opacity-0");
+          DOM.profitMarkerLine.style.transition = "none";
+          DOM.profitConnector.style.transition = "none";
+
+          updateRulerVisualsOnly();
+
           const level = questions[currentLevelIndex];
           const correctPercentX = (level.expectedCP / maxPounds) * 100;
           DOM.hintMarker.style.left = `${correctPercentX}%`;
@@ -1327,6 +1215,13 @@
 
         setTimeout(() => {
           DOM.successPopup.classList.add("hidden");
+
+          // Reset animation logic
+          isAnimatingCalculation = false;
+          DOM.rulerEquationPopup.classList.add("opacity-0");
+          DOM.profitMarkerLine.style.transition = "none";
+          DOM.profitConnector.style.transition = "none";
+
           if (currentLevelIndex < questions.length - 1) {
             currentLevelIndex++;
             loadLevel();
@@ -1388,7 +1283,6 @@
         )
           return;
 
-        // Safely extract client coordinates across diverse pointer/touch events
         const x = e.clientX ?? e.touches?.[0]?.clientX;
         if (x === undefined || x === null) return;
 
@@ -1494,7 +1388,8 @@
         }
         DOM.percentTicks.innerHTML = percentHtml;
 
-        const useTransition = isAnimating && !isTutorialActive;
+        const useTransition =
+          isAnimating && !isTutorialActive && !isAnimatingCalculation;
         if (useTransition) {
           DOM.topTrack.classList.add("ruler-animating");
           DOM.profitMarkerLine.classList.add("ruler-animating");
@@ -1517,20 +1412,23 @@
           DOM.currentCostValue.innerText = "$" + Math.round(rulerVal);
         }
 
-        if (level && level.profitPercent) {
-          const xPos = (targetPercent / 100) * topTrackWidthPercent;
-          DOM.profitMarkerLine.style.display = "block";
-          DOM.profitMarkerLine.style.left = `${xPos}%`;
-          DOM.profitMarkerLine.style.transform = `translateX(-50%)`;
-          DOM.profitConnector.style.display = "block";
-          DOM.profitConnector.style.left = `0%`;
-          DOM.profitConnector.style.width = `${xPos}%`;
-          DOM.profitPercentText.innerText = level.profitPercent + "%";
-          DOM.profitMarkerValue.innerText =
-            "$" + Math.round((targetPercent / 100) * rulerVal);
-        } else {
-          DOM.profitMarkerLine.style.display = "none";
-          DOM.profitConnector.style.display = "none";
+        // Only enforce rigid marker positioning if NOT running our custom calculation slider
+        if (!isAnimatingCalculation) {
+          if (level && level.profitPercent) {
+            const xPos = (targetPercent / 100) * topTrackWidthPercent;
+            DOM.profitMarkerLine.style.display = "block";
+            DOM.profitMarkerLine.style.left = `${xPos}%`;
+            DOM.profitMarkerLine.style.transform = `translateX(-50%)`;
+            DOM.profitConnector.style.display = "block";
+            DOM.profitConnector.style.left = `0%`;
+            DOM.profitConnector.style.width = `${xPos}%`;
+            DOM.profitPercentText.innerText = level.profitPercent + "%";
+            DOM.profitMarkerValue.innerText =
+              "$" + Math.round((targetPercent / 100) * rulerVal);
+          } else {
+            DOM.profitMarkerLine.style.display = "none";
+            DOM.profitConnector.style.display = "none";
+          }
         }
       }
 
