@@ -158,6 +158,12 @@
       id="app-container"
       class="responsive-canvas bg-[#e6d5b8] rounded-none sm:rounded-xl shadow-2xl border-0 sm:border-8 border-[#34495e]"
     >
+      <!-- Toast Notification Container -->
+      <div
+        id="toast-message"
+        class="absolute top-4 md:top-8 left-1/2 transform -translate-x-1/2 -translate-y-[150%] opacity-0 z-[100] px-4 py-2.5 md:px-8 md:py-4 rounded-2xl font-black text-sm md:text-xl text-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] pointer-events-none w-11/12 max-w-2xl border-[3px] md:border-[4px] flex items-center justify-center gap-2 md:gap-3 whitespace-normal leading-tight shadow-2xl bg-[#fff8e7] text-[#4a2e15] border-[#8b5a2b]"
+      ></div>
+
       <!-- Party Popper Container -->
       <div
         id="party-popper-container"
@@ -187,7 +193,7 @@
             class="bg-white p-4 md:p-6 rounded-full shadow-inner mb-4 md:mb-6 border-4 border-[#d9c5a0] relative z-10"
           >
             <span class="text-6xl md:text-8xl drop-shadow-md block leading-none"
-              >🛒</span
+              >🏷️</span
             >
           </div>
 
@@ -232,7 +238,7 @@
           <div
             class="absolute -top-10 -right-10 text-yellow-400/30 text-9xl pointer-events-none rotate-12"
           >
-            ⭐
+            🌟
           </div>
 
           <h2
@@ -389,7 +395,7 @@
               id="level-indicator"
               class="bg-[#8b5a2b] text-white px-2.5 md:px-4 py-0.5 md:py-1 rounded-full font-bold text-[1.45rem] drop-shadow-md mb-2 md:mb-3 flex items-center gap-1.5"
             >
-              ⭐ Level 1 of 7
+              🌟 Level 1 of 7
             </div>
 
             <div class="flex items-start">
@@ -434,7 +440,7 @@
 
           <!-- Interactive Shelf Items -->
           <div
-            class="relative z-10 w-full flex-1 flex justify-center items-end gap-4 md:gap-16 px-4 md:px-12 pb-[2%] min-h-0"
+            class="relative z-10 w-full flex-1 flex justify-center items-end gap-2 md:gap-8 px-4 md:px-12 pb-[2%] min-h-0"
           >
             <div
               class="relative transform hover:scale-105 transition-transform cursor-pointer pb-[1%] h-[75%] md:h-[90%] flex items-end justify-center"
@@ -478,6 +484,33 @@
                   Profit: 0%
                 </div>
               </div>
+            </div>
+
+            <!-- MARKER CONTROLS -->
+            <div
+              class="relative bottom-[8%] md:bottom-[12%] flex flex-col items-center justify-end gap-2 md:gap-3 w-[6rem] md:w-32"
+            >
+              <button
+                onclick="addMarker()"
+                class="bg-[#9c27b0] hover:bg-[#8e24aa] text-white font-black py-2 px-2 md:px-4 rounded-xl shadow-[0_4px_0_#6a1b9a] active:shadow-[0_0px_0_#6a1b9a] active:translate-y-[4px] transition-all flex items-center justify-center gap-1 md:gap-2 border-2 border-[#7b1fa2] text-xs md:text-xl uppercase tracking-wider w-full"
+              >
+                <svg
+                  class="w-4 h-4 md:w-6 md:h-6"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                  />
+                </svg>
+                MARK
+              </button>
+              <button
+                onclick="clearMarkers()"
+                class="bg-[#7f8c8d] hover:bg-[#95a5a6] text-white font-bold py-1.5 px-2 md:px-4 rounded-lg shadow-[0_3px_0_#34495e] active:shadow-[0_0px_0_#34495e] active:translate-y-[3px] transition-all border border-[#2c3e50] text-[0.65rem] md:text-sm uppercase tracking-wider w-full"
+              >
+                CLEAR PINS
+              </button>
             </div>
           </div>
         </div>
@@ -538,6 +571,12 @@
                 id="ruler-track-area"
                 class="flex-1 relative cursor-pointer touch-none ml-2 flex flex-col justify-between py-3"
               >
+                <!-- MARKERS CONTAINER (Placed between tracks) -->
+                <div
+                  id="ruler-markers"
+                  class="absolute left-0 right-0 top-0 bottom-0 pointer-events-none z-40"
+                ></div>
+
                 <!-- Top Track (Percentages) -->
                 <div class="relative h-[25%] flex items-center">
                   <div
@@ -791,7 +830,7 @@
     <!-- Audio Elements -->
     <audio id="sound-wrong" src="wrong.mp3" preload="auto"></audio>
     <audio id="sound-popper" src="popper.mp3" preload="auto"></audio>
-    <audio id="sound-congrats" src="congrats.mp3" preload="auto"></audio>
+    <audio id="sound-congrats" src="correct.mp3" preload="auto"></audio>
 
     <!-- Javascript Logic -->
     <script>
@@ -815,6 +854,9 @@
       let maxPounds = 60;
       let isDragging = false;
       let isAnimating = true;
+      let markers = []; // Array to hold marker values
+      let currentStep = 1; // 1: Mark Original, 2: Mark Discounted, 3: Calculate difference
+      let toastTimeout; // Timeout reference for toast hiding
 
       const DOM = {
         startScreen: document.getElementById("start-screen"),
@@ -845,6 +887,7 @@
         percentTicks: document.getElementById("ruler-percent-ticks"),
         dollarTicks: document.getElementById("ruler-dollar-ticks"),
         rulerHandle: document.getElementById("ruler-handle"),
+        rulerMarkers: document.getElementById("ruler-markers"),
 
         soundWrong: document.getElementById("sound-wrong"),
         soundPopper: document.getElementById("sound-popper"),
@@ -857,13 +900,62 @@
         loadLevel();
       }
 
+      function showToast(message, type = "info", duration = 3000) {
+        const toast = document.getElementById("toast-message");
+
+        // Base classes with a custom spring easing for the bounce effect
+        let baseClass =
+          "absolute top-4 md:top-8 left-1/2 transform -translate-x-1/2 -translate-y-[150%] opacity-0 z-[100] px-4 py-2.5 md:px-8 md:py-4 rounded-2xl font-black text-sm md:text-xl text-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] pointer-events-none w-11/12 max-w-2xl border-[3px] md:border-[4px] flex items-center justify-center gap-2 md:gap-3 whitespace-normal leading-tight shadow-2xl";
+
+        let icon = "💡";
+        if (type === "success") {
+          toast.className =
+            baseClass +
+            " bg-[#f4fcf4] text-[#1B5E20] border-[#4CAF50] shadow-[0_6px_0_#1B5E20,0_15px_20px_rgba(0,0,0,0.3)]";
+          icon = "🌟";
+        } else if (type === "error") {
+          toast.className =
+            baseClass +
+            " bg-[#fff5f5] text-[#78281f] border-[#e74c3c] shadow-[0_6px_0_#78281f,0_15px_20px_rgba(0,0,0,0.3)]";
+          icon = "❌";
+        } else if (type === "warning") {
+          toast.className =
+            baseClass +
+            " bg-[#fffaf0] text-[#7e3300] border-[#f39c12] shadow-[0_6px_0_#a04000,0_15px_20px_rgba(0,0,0,0.3)]";
+          icon = "⚠️";
+        } else {
+          // INFO - Wood/Parchment Theme
+          toast.className =
+            baseClass +
+            " bg-[#fff8e7] text-[#4a2e15] border-[#8b5a2b] shadow-[0_6px_0_#5c3a1e,0_15px_20px_rgba(0,0,0,0.3)]";
+          icon = "💡";
+        }
+
+        toast.innerHTML = `<span class="text-lg md:text-3xl drop-shadow-sm">${icon}</span> <span class="drop-shadow-sm">${message}</span>`;
+
+        // Force reflow to ensure transitions work smoothly
+        void toast.offsetWidth;
+
+        // Animate into view
+        toast.classList.remove("-translate-y-[150%]", "opacity-0");
+        toast.classList.add("translate-y-0", "opacity-100");
+
+        clearTimeout(toastTimeout);
+        if (duration > 0) {
+          toastTimeout = setTimeout(() => {
+            toast.classList.remove("translate-y-0", "opacity-100");
+            toast.classList.add("-translate-y-[150%]", "opacity-0");
+          }, duration);
+        }
+      }
+
       function generateQuestions(count) {
         const newQs = [];
         const easyCombos = [
-          { cp: 100, profitPercent: 10 },
-          { cp: 100, profitPercent: 20 },
-          { cp: 100, profitPercent: 25 },
-          { cp: 100, profitPercent: 50 },
+          { cp: 300, profitPercent: 10 },
+          { cp: 400, profitPercent: 20 },
+          { cp: 600, profitPercent: 25 },
+          { cp: 800, profitPercent: 50 },
           { cp: 200, profitPercent: 10 },
           { cp: 200, profitPercent: 20 },
           { cp: 200, profitPercent: 25 },
@@ -898,9 +990,12 @@
               imageUrl: item.url,
               priceLabel: "Original Price",
               displayPrice: cp,
+              originalPrice: cp,
+              discountedPrice: discountedPrice,
+              percent: percent,
               tagText: `Discount: ${percent}%`,
               questionTitle: "Find the discount:",
-              questionHint: `Hint: Find the ${percent}% discount amount using the ruler.`,
+              questionHint: `Hint: Mark the Original Price, then mark the discounted value, and subtract them.`,
               expectedAnswer: discountAmount,
               modalTitle: "New Task!",
               modalDesc: `Original Price: <b>$${cp}</b><br/>Discount: <b>${percent}%</b>`,
@@ -912,9 +1007,12 @@
               imageUrl: item.url,
               priceLabel: "Discounted Price",
               displayPrice: discountedPrice,
+              originalPrice: cp,
+              discountedPrice: discountedPrice,
+              percent: percent,
               tagText: `Discount: ${percent}%`,
               questionTitle: "Find the discount:",
-              questionHint: `Hint: Find the ${percent}% discount amount using the ruler.`,
+              questionHint: `Hint: Mark the prices using the slider to subtract them visually.`,
               expectedAnswer: discountAmount,
               modalTitle: "New Task!",
               modalDesc: `Sale Price: <b>$${discountedPrice}</b><br/>Discount: <b>${percent}%</b>`,
@@ -927,11 +1025,13 @@
       function loadLevel() {
         const level = questions[currentLevelIndex];
         inputValue = "";
+        markers = []; // Clear markers for the new level
+        currentStep = 1; // Reset to the first step
         updateInputDisplay();
 
         DOM.onScreenTitle.innerText = level.modalTitle;
         DOM.onScreenDesc.innerHTML = level.modalDesc;
-        DOM.levelIndicator.innerHTML = `⭐ Level ${currentLevelIndex + 1} of ${TOTAL_QUESTIONS}`;
+        DOM.levelIndicator.innerHTML = `🌟 Level ${currentLevelIndex + 1} of ${TOTAL_QUESTIONS}`;
         DOM.priceDisplay.innerText = "$" + level.displayPrice;
         DOM.tagDisplay.innerText = level.tagText;
         DOM.priceLabel.innerText = level.priceLabel + ":";
@@ -954,7 +1054,8 @@
         }
 
         isAnimating = true;
-        let initVal = level.displayPrice;
+        // Base the ruler width on the originalPrice so there is always room to mark the MRP!
+        let initVal = level.originalPrice;
 
         let ideal = initVal * 1.2;
         if (ideal < 10) ideal = 10;
@@ -969,14 +1070,34 @@
         else newMax = Math.ceil(ideal / 200) * 200;
 
         maxPounds = Math.max(60, newMax);
-        rulerVal = initVal;
+
+        // Start the slider exactly 100 units below the Original Price (MRP), minimum 20 so it never looks broken at 0
+        rulerVal = Math.max(20, level.originalPrice - 100);
+
         renderRuler();
+
+        // Introduce the step cleanly if the game has already started
+        setTimeout(() => {
+          if (DOM.startScreen.classList.contains("hidden")) {
+            showToast(
+              "Step 1: Slide to mark the Original Price (MRP).",
+              "info",
+              5000,
+            );
+          }
+        }, 500);
       }
 
       function startGame() {
         DOM.startScreen.style.opacity = "0";
         setTimeout(() => {
           DOM.startScreen.classList.add("hidden");
+          // Show the initial toast exactly when the game screen becomes fully visible
+          showToast(
+            "Step 1: Slide to mark the Original Price (MRP).",
+            "info",
+            5000,
+          );
         }, 500);
       }
 
@@ -993,6 +1114,17 @@
 
       function openNumpad(e) {
         e.stopPropagation();
+
+        // Enforce Workflow: User must place both pins first before calculating.
+        if (currentStep < 3) {
+          showToast(
+            "Please mark the Original Price and Discounted Price on the ruler first!",
+            "warning",
+            4000,
+          );
+          return;
+        }
+
         DOM.numpadPopup.classList.remove("hidden");
         DOM.inputCursor.classList.remove("hidden");
         DOM.inputContainer.classList.add("ring-2", "ring-teal-400");
@@ -1085,6 +1217,103 @@
         triggerPartyPopper(true);
       }
 
+      // MARKER FUNCTIONS - Added Guided Workflow
+      function addMarker() {
+        const level = questions[currentLevelIndex];
+
+        // Define a strict but fair tolerance logic (e.g. within 2% of total scale, but min 2 units)
+        const tolerance = Math.max(2, maxPounds * 0.02);
+
+        if (currentStep === 1) {
+          // Looking for Original Price
+          const target = level.originalPrice;
+
+          if (Math.abs(rulerVal - target) <= tolerance) {
+            // Success!
+            markers.push(target); // Snap exact target for clean look
+            currentStep = 2;
+            renderRuler();
+            DOM.soundCongrats.currentTime = 0;
+            DOM.soundCongrats
+              .play()
+              .catch((e) => console.log("Audio error", e));
+            showToast(
+              `Good job! Check where the ${level.percent}% mark is on the slider to find the discounted price, then slide and MARK it.`,
+              "success",
+              6000,
+            );
+          } else {
+            DOM.soundWrong.currentTime = 0;
+            DOM.soundWrong.play().catch((e) => console.log("Audio error", e));
+            showToast(
+              `Not quite! Try to find the correct Original Price (MRP).`,
+              "error",
+              4000,
+            );
+          }
+        } else if (currentStep === 2) {
+          // Looking for Discounted Price
+          const target = level.discountedPrice;
+
+          if (Math.abs(rulerVal - target) <= tolerance) {
+            // Success!
+            markers.push(target);
+            currentStep = 3;
+            renderRuler();
+            DOM.soundCongrats.currentTime = 0;
+            DOM.soundCongrats
+              .play()
+              .catch((e) => console.log("Audio error", e));
+            showToast(
+              "Great! Both pins are placed. Now calculate the difference and enter the discount!",
+              "success",
+              6000,
+            );
+          } else {
+            DOM.soundWrong.currentTime = 0;
+            DOM.soundWrong.play().catch((e) => console.log("Audio error", e));
+            showToast(
+              `Not quite! Remember to apply the ${level.percent}% discount to find the correct price.`,
+              "error",
+              4000,
+            );
+          }
+        } else {
+          // Already marked everything
+          showToast(
+            "You've already marked the prices! Calculate the difference and enter the discount.",
+            "info",
+            4000,
+          );
+        }
+      }
+
+      function clearMarkers() {
+        markers = [];
+        currentStep = 1;
+        showToast(
+          "Pins cleared. Step 1: Mark the Original Price.",
+          "info",
+          4000,
+        );
+
+        // Recalculate maxPounds to snap the ruler back to normal size
+        let ideal = rulerVal * 1.2;
+        if (ideal < 10) ideal = 10;
+
+        let newMax;
+        if (ideal <= 20) newMax = Math.ceil(ideal / 2) * 2;
+        else if (ideal <= 50) newMax = Math.ceil(ideal / 5) * 5;
+        else if (ideal <= 100) newMax = Math.ceil(ideal / 10) * 10;
+        else if (ideal <= 250) newMax = Math.ceil(ideal / 20) * 20;
+        else if (ideal <= 600) newMax = Math.ceil(ideal / 50) * 50;
+        else if (ideal <= 1200) newMax = Math.ceil(ideal / 100) * 100;
+        else newMax = Math.ceil(ideal / 200) * 200;
+
+        maxPounds = newMax;
+        renderRuler();
+      }
+
       function handlePointerDown(e) {
         isAnimating = false;
         isDragging = true;
@@ -1101,7 +1330,12 @@
         document.removeEventListener("pointerup", handlePointerUp);
         isAnimating = true;
 
-        let ideal = rulerVal * 1.2;
+        let maxVal = rulerVal;
+        if (markers.length > 0) {
+          maxVal = Math.max(rulerVal, ...markers);
+        }
+
+        let ideal = maxVal * 1.2;
         if (ideal < 10) ideal = 10;
 
         let newMax;
@@ -1113,7 +1347,13 @@
         else if (ideal <= 1200) newMax = Math.ceil(ideal / 100) * 100;
         else newMax = Math.ceil(ideal / 200) * 200;
 
-        maxPounds = newMax;
+        // If markers exist, prevent the ruler from shrinking so pins don't disappear
+        if (markers.length > 0) {
+          maxPounds = Math.max(maxPounds, newMax);
+        } else {
+          maxPounds = newMax;
+        }
+
         renderRuler();
       }
 
@@ -1146,7 +1386,10 @@
 
       DOM.rulerHandle.addEventListener("pointerdown", handlePointerDown);
       DOM.rulerTrackArea.addEventListener("pointerdown", (e) => {
-        if (e.target !== DOM.rulerHandle) {
+        if (
+          e.target !== DOM.rulerHandle &&
+          !e.target.closest("#ruler-markers")
+        ) {
           handlePointerDown(e);
         }
       });
@@ -1218,6 +1461,31 @@
           dollarHtml += `<div class="absolute top-0 flex flex-col items-center ${transClass}" style="left: ${(i / maxPounds) * 100}%; transform: translateX(-50%)"><div class="w-[3px] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.5)] h-5"></div><div class="text-white font-bold text-xl mt-2 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] whitespace-nowrap">${i}</div></div>`;
         });
         DOM.dollarTicks.innerHTML = dollarHtml;
+
+        // Render Markers
+        if (DOM.rulerMarkers) {
+          let markersHtml = "";
+          markers.forEach((m, idx) => {
+            const colorClass = idx === 0 ? "bg-blue-500" : "bg-purple-500";
+            const borderClass =
+              idx === 0 ? "border-blue-700" : "border-purple-700";
+            const shadowClass =
+              idx === 0 ? "shadow-[0_0_5px_blue]" : "shadow-[0_0_5px_purple]";
+            const posPercent = (m / maxPounds) * 100;
+
+            if (posPercent >= 0 && posPercent <= 100) {
+              markersHtml += `
+                <div class="absolute top-0 bottom-0 flex flex-col items-center justify-center transition-all duration-300" style="left: ${posPercent}%; transform: translateX(-50%)">
+                    <div class="w-[3px] h-full ${colorClass} ${shadowClass} absolute top-0"></div>
+                    <div class="${colorClass} text-white font-black text-xs md:text-sm px-1.5 md:px-2 py-0.5 rounded shadow-md whitespace-nowrap border-2 ${borderClass} z-50 relative">
+                        $${Math.round(m)}
+                    </div>
+                    <div class="w-3 h-3 md:w-4 md:h-4 rounded-full ${colorClass} absolute bottom-1 border-2 border-white shadow-sm z-50"></div>
+                </div>`;
+            }
+          });
+          DOM.rulerMarkers.innerHTML = markersHtml;
+        }
 
         updateRulerVisualsOnly();
       }
