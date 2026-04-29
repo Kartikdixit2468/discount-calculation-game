@@ -830,7 +830,7 @@
     <!-- Audio Elements -->
     <audio id="sound-wrong" src="wrong.mp3" preload="auto"></audio>
     <audio id="sound-popper" src="popper.mp3" preload="auto"></audio>
-    <audio id="sound-congrats" src="correct.mp3" preload="auto"></audio>
+    <audio id="sound-congrats" src="congrats.mp3" preload="auto"></audio>
 
     <!-- Javascript Logic -->
     <script>
@@ -981,43 +981,23 @@
           const discountAmount = (cp * percent) / 100;
           const discountedPrice = cp - discountAmount;
 
-          const isFindDiscountAmount = Math.random() > 0.5;
-
-          if (isFindDiscountAmount) {
-            newQs.push({
-              type: "find_discount_from_original",
-              toyName: item.name,
-              imageUrl: item.url,
-              priceLabel: "Original Price",
-              displayPrice: cp,
-              originalPrice: cp,
-              discountedPrice: discountedPrice,
-              percent: percent,
-              tagText: `Discount: ${percent}%`,
-              questionTitle: "Find the discount:",
-              questionHint: `Hint: Mark the Original Price, then mark the discounted value, and subtract them.`,
-              expectedAnswer: discountAmount,
-              modalTitle: "New Task!",
-              modalDesc: `Original Price: <b>$${cp}</b><br/>Discount: <b>${percent}%</b>`,
-            });
-          } else {
-            newQs.push({
-              type: "find_discount_from_sale",
-              toyName: item.name,
-              imageUrl: item.url,
-              priceLabel: "Discounted Price",
-              displayPrice: discountedPrice,
-              originalPrice: cp,
-              discountedPrice: discountedPrice,
-              percent: percent,
-              tagText: `Discount: ${percent}%`,
-              questionTitle: "Find the discount:",
-              questionHint: `Hint: Mark the prices using the slider to subtract them visually.`,
-              expectedAnswer: discountAmount,
-              modalTitle: "New Task!",
-              modalDesc: `Sale Price: <b>$${discountedPrice}</b><br/>Discount: <b>${percent}%</b>`,
-            });
-          }
+          // Always generate the Original Price -> Find Discount workflow
+          newQs.push({
+            type: "find_discount_from_original",
+            toyName: item.name,
+            imageUrl: item.url,
+            priceLabel: "Original Price",
+            displayPrice: cp,
+            originalPrice: cp,
+            discountedPrice: discountedPrice,
+            percent: percent,
+            tagText: `Discount: ${percent}%`,
+            questionTitle: "Find the discount:",
+            questionHint: `Hint: Mark the Original Price, then mark the discounted value, and subtract them.`,
+            expectedAnswer: discountAmount,
+            modalTitle: "New Task!",
+            modalDesc: `Original Price: <b>$${cp}</b><br/>Discount: <b>${percent}%</b>`,
+          });
         }
         return newQs;
       }
