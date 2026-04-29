@@ -158,6 +158,12 @@
       id="app-container"
       class="responsive-canvas bg-[#e6d5b8] rounded-none sm:rounded-xl shadow-2xl border-0 sm:border-8 border-[#34495e]"
     >
+      <!-- Toast Notification Container -->
+      <div
+        id="toast-message"
+        class="absolute top-4 md:top-8 left-1/2 transform -translate-x-1/2 -translate-y-[150%] opacity-0 z-[100] px-4 py-2.5 md:px-8 md:py-4 rounded-2xl font-black text-sm md:text-xl text-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] pointer-events-none w-11/12 max-w-2xl border-[3px] md:border-[4px] flex items-center justify-center gap-2 md:gap-3 whitespace-normal leading-tight shadow-2xl bg-[#fff8e7] text-[#4a2e15] border-[#8b5a2b]"
+      ></div>
+
       <!-- Party Popper Container -->
       <div
         id="party-popper-container"
@@ -859,6 +865,17 @@
       let isTutorialActive = false;
       let isAnimatingCalculation = false;
 
+      // NEW DRAG/ZOOM STATE VARIABLES
+      let edgeTriggered = 0;
+      let zoomAnimFrame = null;
+      let lastVisualPercentX = 0;
+
+      // Clean scale increments for the smooth zooming ratchet system
+      const RULER_STEPS = [
+        60, 80, 100, 120, 150, 200, 250, 300, 400, 500, 600, 800, 1000, 1200,
+        1500, 2000, 2500, 3000,
+      ];
+
       const DOM = {
         startScreen: document.getElementById("start-screen"),
         gameScreen: document.getElementById("game-screen"),
@@ -912,6 +929,48 @@
         soundPopper: document.getElementById("sound-popper"),
         soundCongrats: document.getElementById("sound-congrats"),
       };
+
+      // UTILITY: Find next clean logical max bounds to zoom to
+      function getNextMax(current, dir) {
+        let closestIdx = 0;
+        let minDiff = Infinity;
+        for (let i = 0; i < RULER_STEPS.length; i++) {
+          let diff = Math.abs(RULER_STEPS[i] - current);
+          if (diff < minDiff) {
+            minDiff = diff;
+            closestIdx = i;
+          }
+        }
+        let nextIdx = closestIdx + dir;
+        if (nextIdx < 0) nextIdx = 0;
+        if (nextIdx >= RULER_STEPS.length) nextIdx = RULER_STEPS.length - 1;
+        return RULER_STEPS[nextIdx];
+      }
+
+      // UTILITY: Super smooth cubic-eased JS animation for the dynamic scaler!
+      function animateMaxPounds(target) {
+        if (zoomAnimFrame) cancelAnimationFrame(zoomAnimFrame);
+        const start = maxPounds;
+        const duration = 250; // Smooth 250ms transition
+        const startTime = performance.now();
+
+        function step(time) {
+          const progress = Math.min((time - startTime) / duration, 1);
+          const ease = 1 - Math.pow(1 - progress, 3); // cubic ease out
+          maxPounds = start + (target - start) * ease;
+
+          // Keep tracking the ruler calculation flawlessly during the physical zoom out/in
+          rulerVal = lastVisualPercentX * maxPounds;
+
+          renderRuler();
+          // updateRulerVisualsOnly is called inside renderRuler naturally
+
+          if (progress < 1) {
+            zoomAnimFrame = requestAnimationFrame(step);
+          }
+        }
+        zoomAnimFrame = requestAnimationFrame(step);
+      }
 
       function init() {
         questions = generateQuestions(TOTAL_QUESTIONS);
@@ -990,22 +1049,26 @@
         }
 
         isAnimating = true;
+
         let initVal = level.displayPrice;
+        let ideal = initVal * 1.4; // 1.4 keeps the handle roughly in the nice right-middle quadrant
+        if (ideal < 60) ideal = 60;
 
-        let ideal = initVal * 1.6;
-        if (ideal < 10) ideal = 10;
+        // Snaps perfectly to our logical step system immediately
+        let found = false;
+        for (let i = 0; i < RULER_STEPS.length; i++) {
+          if (RULER_STEPS[i] >= ideal) {
+            maxPounds = RULER_STEPS[i];
+            found = true;
+            break;
+          }
+        }
+        if (!found) maxPounds = RULER_STEPS[RULER_STEPS.length - 1];
 
-        let newMax;
-        if (ideal <= 20) newMax = Math.ceil(ideal / 2) * 2;
-        else if (ideal <= 50) newMax = Math.ceil(ideal / 5) * 5;
-        else if (ideal <= 100) newMax = Math.ceil(ideal / 10) * 10;
-        else if (ideal <= 250) newMax = Math.ceil(ideal / 20) * 20;
-        else if (ideal <= 600) newMax = Math.ceil(ideal / 50) * 50;
-        else if (ideal <= 1200) newMax = Math.ceil(ideal / 100) * 100;
-        else newMax = Math.ceil(ideal / 200) * 200;
-
-        maxPounds = Math.max(60, newMax);
         rulerVal = initVal;
+        edgeTriggered = 0; // Reset ratchet lock
+        if (zoomAnimFrame) cancelAnimationFrame(zoomAnimFrame);
+
         renderRuler();
       }
 
@@ -1286,21 +1349,10 @@
         document.removeEventListener("pointermove", updateDrag);
         document.removeEventListener("pointerup", handlePointerUp);
         isAnimating = true;
-        rulerVal = Math.round(rulerVal / 10) * 10;
 
-        let ideal = rulerVal * 1.6;
-        if (ideal < 10) ideal = 10;
+        // Just round to the nearest whole number to stop jarring visual jumps when resting
+        rulerVal = Math.round(rulerVal);
 
-        let newMax;
-        if (ideal <= 20) newMax = Math.ceil(ideal / 2) * 2;
-        else if (ideal <= 50) newMax = Math.ceil(ideal / 5) * 5;
-        else if (ideal <= 100) newMax = Math.ceil(ideal / 10) * 10;
-        else if (ideal <= 250) newMax = Math.ceil(ideal / 20) * 20;
-        else if (ideal <= 600) newMax = Math.ceil(ideal / 50) * 50;
-        else if (ideal <= 1200) newMax = Math.ceil(ideal / 100) * 100;
-        else newMax = Math.ceil(ideal / 200) * 200;
-
-        maxPounds = newMax;
         renderRuler();
       }
 
@@ -1322,14 +1374,46 @@
         const pointerX = x - rect.left;
         let percentX = pointerX / trackWidthPx;
 
-        if (percentX > 0.95) {
-          maxPounds *= 1.03;
-          percentX = 0.95;
-          renderRuler();
+        // Center safe-zone: Resets the ratchet so the user can zoom again if they hit the edge again
+        if (percentX > 0.35 && percentX < 0.75) {
+          edgeTriggered = 0;
         }
-        if (percentX < 0.05) percentX = 0.05;
 
-        rulerVal = percentX * maxPounds;
+        let visualPercentX = percentX;
+
+        // --- NEW DRAG ZOOM BOUNDARIES (85% and 25%) ---
+
+        // 1. Right Edge Zoom Out (Pushing boundaries)
+        if (percentX > 0.85) {
+          visualPercentX = 0.85; // Visually lock to the 85% mark so the mouse can "push" against it without dropping off
+          if (edgeTriggered !== 1) {
+            edgeTriggered = 1;
+            let targetMax = getNextMax(maxPounds, 1);
+            if (targetMax !== maxPounds) {
+              animateMaxPounds(targetMax);
+            }
+          }
+        }
+        // 2. Left Edge Zoom In (Precise detailing)
+        else if (percentX < 0.25) {
+          // We DO NOT lock visualPercentX here so the user can actually drag all the way down to 0 without getting stuck
+          if (edgeTriggered !== -1) {
+            edgeTriggered = -1;
+            let targetMax = getNextMax(maxPounds, -1);
+            if (targetMax !== maxPounds) {
+              animateMaxPounds(targetMax);
+            }
+          }
+        }
+
+        if (visualPercentX > 1) visualPercentX = 1;
+        if (visualPercentX < 0) visualPercentX = 0;
+
+        lastVisualPercentX = visualPercentX;
+
+        // As long as we are NOT physically in the middle of animating the maxbounds (which takes over rulerVal calculation),
+        // we update the underlying value directly.
+        rulerVal = visualPercentX * maxPounds;
         updateRulerVisualsOnly();
       }
 
