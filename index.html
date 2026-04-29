@@ -828,9 +828,11 @@
     </div>
 
     <!-- Audio Elements -->
-    <audio id="sound-wrong" src="wrong.mp3" preload="auto"></audio>
-    <audio id="sound-popper" src="popper.mp3" preload="auto"></audio>
-    <audio id="sound-congrats" src="congrats.mp3" preload="auto"></audio>
+    <audio id="sound-wrong" src="sounds/wrong.mp3" preload="auto"></audio>
+    <audio id="sound-popper" src="sounds/popper.mp3" preload="auto"></audio>
+    <audio id="sound-correct" src="sounds/correct.mp3" preload="auto"></audio>
+    <audio id="sound-congrats" src="sounds/congrats.mp3" preload="auto"></audio>
+    <audio id="sound-bg" src="sounds/bg.mp3" preload="auto" loop></audio>
 
     <!-- Javascript Logic -->
     <script>
@@ -891,7 +893,9 @@
 
         soundWrong: document.getElementById("sound-wrong"),
         soundPopper: document.getElementById("sound-popper"),
+        soundCorrect: document.getElementById("sound-correct"),
         soundCongrats: document.getElementById("sound-congrats"),
+        soundBg: document.getElementById("sound-bg"),
       };
 
       function init() {
@@ -1070,6 +1074,12 @@
 
       function startGame() {
         DOM.startScreen.style.opacity = "0";
+
+        // Start background music when they begin
+        DOM.soundBg.currentTime = 0;
+        DOM.soundBg.volume = 0.3; // keep it subtle
+        DOM.soundBg.play().catch((e) => console.log("Audio error:", e));
+
         setTimeout(() => {
           DOM.startScreen.classList.add("hidden");
           // Show the initial toast exactly when the game screen becomes fully visible
@@ -1089,6 +1099,11 @@
 
         DOM.startScreen.classList.remove("hidden");
         DOM.startScreen.style.opacity = "1";
+
+        // Ensure BG Music loops around or plays again gracefully
+        DOM.soundBg.currentTime = 0;
+        DOM.soundBg.play().catch((e) => console.log("Audio error:", e));
+
         init();
       }
 
@@ -1165,6 +1180,11 @@
         const level = questions[currentLevelIndex];
         if (parseFloat(inputValue) === level.expectedAnswer) {
           closeNumpad();
+
+          // Play the correct answer sound effect
+          DOM.soundCorrect.currentTime = 0;
+          DOM.soundCorrect.play().catch((e) => console.log("Audio error:", e));
+
           triggerPartyPopper();
 
           setTimeout(() => {
@@ -1192,6 +1212,10 @@
       function showEndScreen() {
         DOM.gameScreen.classList.add("hidden");
         DOM.endScreen.classList.remove("hidden");
+
+        // Stop the background music for the big reveal!
+        DOM.soundBg.pause();
+
         DOM.soundCongrats.currentTime = 0;
         DOM.soundCongrats.play().catch((e) => console.log("Audio error:", e));
         triggerPartyPopper(true);
@@ -1213,10 +1237,8 @@
             markers.push(target); // Snap exact target for clean look
             currentStep = 2;
             renderRuler();
-            DOM.soundCongrats.currentTime = 0;
-            DOM.soundCongrats
-              .play()
-              .catch((e) => console.log("Audio error", e));
+            DOM.soundCorrect.currentTime = 0;
+            DOM.soundCorrect.play().catch((e) => console.log("Audio error", e));
             showToast(
               `Good job! Check where the ${level.percent}% mark is on the slider to find the discounted price, then slide and MARK it.`,
               "success",
@@ -1240,10 +1262,8 @@
             markers.push(target);
             currentStep = 3;
             renderRuler();
-            DOM.soundCongrats.currentTime = 0;
-            DOM.soundCongrats
-              .play()
-              .catch((e) => console.log("Audio error", e));
+            DOM.soundCorrect.currentTime = 0;
+            DOM.soundCorrect.play().catch((e) => console.log("Audio error", e));
             showToast(
               "Great! Both pins are placed. Now calculate the difference and enter the discount!",
               "success",
