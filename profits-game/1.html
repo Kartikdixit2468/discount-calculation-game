@@ -140,24 +140,6 @@
         animation: handClick 0.4s ease-in-out;
       }
 
-      @keyframes readyGlow {
-        0% {
-          box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
-        }
-        70% {
-          box-shadow: 0 0 0 15px rgba(76, 175, 80, 0);
-        }
-        100% {
-          box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
-        }
-      }
-      .input-ready-glow {
-        animation: readyGlow 1.5s infinite;
-        border-color: #4caf50 !important;
-        background-color: #e8f5e9 !important;
-        color: #1b5e20 !important;
-      }
-
       .perspective-1000 {
         perspective: 1000px;
       }
@@ -176,12 +158,6 @@
       id="app-container"
       class="responsive-canvas bg-[#e6d5b8] rounded-none sm:rounded-xl shadow-2xl border-0 sm:border-8 border-[#34495e]"
     >
-      <!-- Toast Notification Container -->
-      <div
-        id="toast-message"
-        class="absolute top-4 md:top-6 left-1/2 transform -translate-x-1/2 -translate-y-[150%] opacity-0 z-[100] px-3 py-1.5 md:px-6 md:py-2 rounded-xl font-bold text-xs md:text-base text-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] pointer-events-none w-11/12 max-w-lg border-2 md:border-[3px] flex items-center justify-center gap-1.5 md:gap-2 whitespace-normal leading-tight shadow-xl bg-[#fff8e7] text-[#4a2e15] border-[#8b5a2b]"
-      ></div>
-
       <!-- Party Popper Container -->
       <div
         id="party-popper-container"
@@ -211,7 +187,7 @@
             class="bg-white p-4 md:p-6 rounded-full shadow-inner mb-4 md:mb-6 border-4 border-[#d9c5a0] relative z-10"
           >
             <span class="text-6xl md:text-8xl drop-shadow-md block leading-none"
-              >🏷️</span
+              >🛒</span
             >
           </div>
 
@@ -256,7 +232,7 @@
           <div
             class="absolute -top-10 -right-10 text-yellow-400/30 text-9xl pointer-events-none rotate-12"
           >
-            🌟
+            ⭐
           </div>
 
           <h2
@@ -411,22 +387,22 @@
           >
             <div
               id="level-indicator"
-              class="bg-[#8b5a2b] text-white px-2.5 md:px-4 py-0.5 md:py-1 rounded-full font-bold text-[1.45rem] drop-shadow-md mb-2 md:mb-3 flex items-center gap-1.5"
+              class="bg-[#8b5a2b] text-white px-2.5 md:px-4 py-0.5 md:py-1 rounded-full font-bold text-[0.6rem] md:text-[0.9rem] drop-shadow-md mb-2 md:mb-3 flex items-center gap-1.5"
             >
-              🌟 Level 1 of 7
+              ⭐ Level 1 of 7
             </div>
 
             <div class="flex items-start">
               <div>
                 <h3
                   id="on-screen-title"
-                  class="font-black text-[#4a2e15] text-[1.9rem] leading-tight mb-0.5 md:mb-1 drop-shadow-sm"
+                  class="font-black text-[#4a2e15] text-[1.05rem] md:text-[1.6rem] leading-tight mb-0.5 md:mb-1 drop-shadow-sm"
                 >
                   New Task!
                 </h3>
                 <p
                   id="on-screen-desc"
-                  class="text-[1.25rem] text-[#5c3a1e] font-medium leading-tight md:leading-snug break-words"
+                  class="text-[0.8rem] md:text-[1.05rem] text-[#5c3a1e] font-medium leading-tight md:leading-snug break-words"
                 >
                   Instruction details go here.
                 </p>
@@ -456,9 +432,30 @@
             </svg>
           </button>
 
+          <!-- Submit Button -->
+          <button
+            id="submit-btn"
+            onclick="checkWinCondition()"
+            class="absolute bottom-[22%] md:bottom-[28%] right-4 md:right-8 bg-[#4CAF50] hover:bg-[#43A047] text-white px-4 py-2 md:px-6 md:py-2.5 rounded-xl font-black text-sm md:text-xl transition-all duration-150 active:translate-y-[3px] md:active:translate-y-[5px] active:shadow-[0_2px_0_#1B5E20] shadow-[0_5px_0_#1B5E20] border-[2px] md:border-[3px] border-[#1B5E20] z-20 flex items-center gap-1 md:gap-2 uppercase tracking-wide origin-center"
+          >
+            SUBMIT
+            <svg
+              class="w-4 h-4 md:w-6 md:h-6"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12l5 5l10 -10" />
+            </svg>
+          </button>
+
           <!-- Interactive Shelf Items -->
           <div
-            class="relative z-10 w-full flex-1 flex justify-center items-end gap-2 md:gap-8 px-4 md:px-12 pb-[2%] min-h-0"
+            class="relative z-10 w-full flex-1 flex justify-center items-end gap-4 md:gap-16 px-4 md:px-12 pb-[2%] min-h-0"
           >
             <div
               class="relative transform hover:scale-105 transition-transform cursor-pointer pb-[1%] h-[75%] md:h-[90%] flex items-end justify-center"
@@ -503,43 +500,17 @@
                 </div>
               </div>
             </div>
-
-            <!-- MARKER CONTROLS -->
-            <div
-              class="relative bottom-[8%] md:bottom-[12%] flex flex-col items-center justify-end gap-2 md:gap-3 w-[6rem] md:w-32"
-            >
-              <button
-                onclick="addMarker()"
-                class="bg-[#9c27b0] hover:bg-[#8e24aa] text-white font-black py-2 px-2 md:px-4 rounded-xl shadow-[0_4px_0_#6a1b9a] active:shadow-[0_0px_0_#6a1b9a] active:translate-y-[4px] transition-all flex items-center justify-center gap-1 md:gap-2 border-2 border-[#7b1fa2] text-xs md:text-xl uppercase tracking-wider w-full"
-              >
-                <svg
-                  class="w-4 h-4 md:w-6 md:h-6"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
-                  />
-                </svg>
-                MARK
-              </button>
-              <button
-                onclick="clearMarkers()"
-                class="bg-[#7f8c8d] hover:bg-[#95a5a6] text-white font-bold py-1.5 px-2 md:px-4 rounded-lg shadow-[0_3px_0_#34495e] active:shadow-[0_0px_0_#34495e] active:translate-y-[3px] transition-all border border-[#2c3e50] text-[0.65rem] md:text-sm uppercase tracking-wider w-full"
-              >
-                CLEAR PINS
-              </button>
-            </div>
           </div>
         </div>
 
-        <!-- Ruler Drawer Area (25% Height) -->
+        <!-- Ruler Drawer Area (45% Height) -->
         <div
           id="ruler-container"
-          class="h-[25%] bg-[#9c6633] relative border-t-[3px] border-b-[3px] border-[#5c3a1e] shadow-inner flex items-center z-20"
+          class="h-[45%] bg-[#8b562a] relative border-t-2 md:border-t-[4px] border-[#4a2e15] shadow-inner flex items-center z-20"
         >
+          <!-- Subtle wood grain patterns -->
           <div
-            class="absolute inset-0 opacity-20 pointer-events-none"
+            class="absolute inset-0 opacity-10 pointer-events-none"
             style="
               background-image: repeating-linear-gradient(
                 15deg,
@@ -551,35 +522,32 @@
             "
           ></div>
           <div
-            class="absolute inset-0 opacity-30 pointer-events-none"
+            class="absolute inset-0 opacity-40 pointer-events-none"
             style="
               background-image: linear-gradient(
                 to right,
-                rgba(0, 0, 0, 0.4) 0%,
-                transparent 5%,
-                transparent 95%,
-                rgba(0, 0, 0, 0.4) 100%
+                rgba(0, 0, 0, 0.5) 0%,
+                transparent 8%,
+                transparent 92%,
+                rgba(0, 0, 0, 0.5) 100%
               );
             "
           ></div>
 
           <div
-            class="w-full h-full flex flex-col justify-center px-6 relative z-10"
+            class="w-full h-full flex flex-col justify-center px-2 md:px-8 relative z-10"
           >
-            <div class="flex w-full items-stretch">
-              <!-- Symbols Column -->
+            <div class="flex w-full items-stretch h-full">
+              <!-- Symbols Column (Tightly spaced) -->
               <div
-                class="w-[3.75rem] flex flex-col justify-between py-3 text-white font-bold text-3xl font-serif"
+                class="w-[20px] md:w-[45px] flex flex-col justify-between h-[3rem] md:h-[4.5rem] my-auto text-white/80 font-bold text-sm md:text-3xl font-serif translate-y-[1px] md:translate-y-[2px]"
               >
                 <div
-                  class="flex items-center justify-center h-[25%] text-[#dce775] drop-shadow-md"
+                  class="flex items-center justify-center text-[#dce775] leading-none"
                 >
                   %
                 </div>
-                <div class="flex-1"></div>
-                <div
-                  class="flex items-center justify-center h-[25%] drop-shadow-md"
-                >
+                <div class="flex items-center justify-center leading-none">
                   $
                 </div>
               </div>
@@ -587,177 +555,193 @@
               <!-- Tracks Column -->
               <div
                 id="ruler-track-area"
-                class="flex-1 relative cursor-pointer touch-none ml-2 flex flex-col justify-between py-3"
+                class="flex-1 relative cursor-pointer touch-none ml-1 md:ml-3 flex flex-col justify-center h-full"
               >
-                <!-- MARKERS CONTAINER (Placed between tracks) -->
+                <!-- Track Wrapper tightly holding both lines to DECREASE the gap -->
                 <div
-                  id="ruler-markers"
-                  class="absolute left-0 right-0 top-0 bottom-0 pointer-events-none z-40"
-                ></div>
-
-                <!-- Top Track (Percentages) -->
-                <div class="relative h-[25%] flex items-center">
+                  class="relative flex flex-col justify-between h-[3rem] md:h-[4.5rem] w-full my-auto"
+                >
+                  <!-- Dynamic Equation Popup (Positioned above segment after slide) -->
                   <div
-                    id="ruler-top-track"
-                    class="absolute left-0 h-[4px] bg-[#dce775] shadow-[0_1px_5px_rgba(220,231,117,0.8)] origin-left"
-                  >
-                    <div id="ruler-percent-ticks"></div>
-                  </div>
-
-                  <!-- Draggable Handle (Separated from top track to allow locking) -->
-                  <div
-                    id="ruler-handle"
-                    class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-[#dce775]/20 border-4 border-[#dce775] shadow-[0_0_8px_rgba(220,231,117,0.8)] cursor-ew-resize flex items-center justify-center z-30 hover:scale-110 transition-transform touch-none"
+                    id="ruler-equation-popup"
+                    class="absolute top-0 -translate-y-[5.5rem] md:-translate-y-[7.5rem] flex justify-center items-center z-[55] pointer-events-none opacity-0 transition-opacity duration-500 overflow-visible"
                   >
                     <div
-                      class="w-3 h-3 rounded-full bg-[#cddc39] shadow-[0_0_6px_2px_#cddc39]"
+                      id="ruler-equation-content"
+                      class="text-white px-3 py-1.5 md:px-5 md:py-2.5 rounded-xl border-2 md:border-[3px] shadow-2xl text-xs md:text-xl font-black tracking-wide whitespace-nowrap flex items-center gap-1.5 md:gap-2"
                     ></div>
-                    <svg
-                      class="w-4 h-4 text-[#dce775] absolute -left-3"
-                      stroke-width="3"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="m15 18-6-6 6-6" />
-                    </svg>
-                    <svg
-                      class="w-4 h-4 text-[#dce775] absolute -right-3"
-                      stroke-width="3"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="m9 18 6-6-6-6" />
-                    </svg>
                   </div>
-                </div>
 
-                <div class="flex-1"></div>
-
-                <!-- Bottom Track (Dollars) -->
-                <div class="relative h-[25%] flex items-start">
+                  <!-- Dynamic Profit Connector (Horizontal Line joined from 0% start) -->
                   <div
-                    class="absolute left-0 top-0 w-full h-[4px] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.5)]"
+                    id="profit-connector"
+                    class="absolute top-0 h-[2px] md:h-[4px] bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.8)] z-10 pointer-events-none"
+                    style="display: none"
+                  ></div>
+
+                  <!-- Dynamic Profit Marker (Vertical Solid Line) -->
+                  <div
+                    id="profit-marker-line"
+                    class="absolute top-0 bottom-0 w-[2px] md:w-[3px] bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.8)] z-20 pointer-events-none"
+                    style="display: none"
                   >
-                    <div id="ruler-dollar-ticks"></div>
+                    <!-- Top Label (e.g. 25%) safely pushed UP -->
+                    <div
+                      class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full pb-3 md:pb-5 z-30"
+                    >
+                      <div
+                        class="bg-[#4a2e15] text-yellow-400 font-black text-[0.6rem] md:text-[0.95rem] px-2 md:px-3 py-0.5 md:py-1 rounded-full border-[1.5px] md:border-2 border-yellow-500 shadow-lg whitespace-nowrap flex items-center justify-center gap-1"
+                      >
+                        ⭐ <span id="profit-percent-text">25%</span>
+                      </div>
+                    </div>
+
+                    <!-- Top Anchor Dot -->
+                    <div
+                      class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 md:w-4 md:h-4 bg-white rounded-full border-[2px] md:border-[3px] border-yellow-400 shadow-[0_0_8px_rgba(250,204,21,1)] z-30"
+                    ></div>
+
+                    <!-- Bottom Anchor Dot -->
+                    <div
+                      class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2.5 h-2.5 md:w-4 md:h-4 bg-white rounded-full border-[2px] md:border-[3px] border-yellow-400 shadow-[0_0_8px_rgba(250,204,21,1)] z-30"
+                    ></div>
+
+                    <!-- Bottom Label (Target Profit Price $) safely pushed DOWN -->
+                    <div
+                      class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full pt-8 md:pt-12 z-30"
+                    >
+                      <div
+                        id="profit-marker-value-bg"
+                        class="bg-[#4a2e15] text-yellow-400 font-black text-[0.65rem] md:text-[1.1rem] px-2 md:px-4 py-0.5 md:py-1 rounded-lg border-[1.5px] md:border-2 border-yellow-500 shadow-lg whitespace-nowrap tracking-wide transition-colors duration-300"
+                      >
+                        <span id="profit-marker-value">$125</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Dynamic Hint Marker (Hidden by default, used for incorrect answer hint) -->
+                  <div
+                    id="hint-marker"
+                    class="absolute top-0 bottom-0 w-[2px] md:w-[3px] bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.9)] z-20 pointer-events-none opacity-0"
+                  >
+                    <!-- Center Anchor Dot -->
+                    <div
+                      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 md:w-4 md:h-4 bg-white rounded-full border-[2px] md:border-[3px] border-red-500 shadow-[0_0_8px_rgba(248,113,113,1)] z-30"
+                    ></div>
+                  </div>
+
+                  <!-- Top Track (Percentages) -->
+                  <div class="relative w-full h-[2px] md:h-[4px]">
+                    <div
+                      class="absolute left-0 top-0 w-full h-full bg-white/20 rounded-full shadow-inner"
+                    ></div>
+                    <div
+                      id="ruler-top-track"
+                      class="absolute left-0 top-0 h-full bg-[#cddc39] rounded-full shadow-[0_0_8px_rgba(205,220,57,0.6)] origin-left"
+                    >
+                      <!-- 100% Draggable Circular Handle -->
+                      <div
+                        id="ruler-handle"
+                        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-4 h-4 md:w-6 md:h-6 rounded-full bg-[#cddc39] border-[2px] md:border-[3px] border-white shadow-[0_2px_10px_rgba(0,0,0,0.5)] cursor-ew-resize flex items-center justify-center z-40 hover:scale-105 transition-transform touch-none group"
+                      >
+                        <!-- Inner Pulse and Center Dot -->
+                        <div
+                          class="absolute inset-0 rounded-full bg-white/30 animate-ping opacity-75 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none"
+                        ></div>
+                        <div
+                          class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-[#4a2e15] opacity-50 shadow-inner pointer-events-none"
+                        ></div>
+
+                        <!-- Outside Chevron Arrows -->
+                        <svg
+                          class="w-2.5 h-2.5 md:w-3.5 md:h-3.5 text-[#cddc39] absolute left-[-10px] md:left-[-14px] drop-shadow-md pointer-events-none"
+                          stroke-width="3"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="m15 18-6-6 6-6" />
+                        </svg>
+                        <svg
+                          class="w-2.5 h-2.5 md:w-3.5 md:h-3.5 text-[#cddc39] absolute right-[-10px] md:right-[-14px] drop-shadow-md pointer-events-none"
+                          stroke-width="3"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="m9 18 6-6-6-6" />
+                        </svg>
+
+                        <!-- Faint vertical line connecting to bottom track to aid alignment -->
+                        <div
+                          class="absolute top-full h-[3rem] md:h-[4.5rem] w-[1px] md:w-[2px] bg-white/30 pointer-events-none"
+                        ></div>
+                      </div>
+                    </div>
+                    <div
+                      id="ruler-percent-ticks"
+                      class="absolute top-0 left-0 w-full h-full pointer-events-none"
+                    ></div>
+                  </div>
+
+                  <!-- Bottom Track (Dollars) -->
+                  <div
+                    class="relative w-full h-[2px] md:h-[4px] bg-white/40 rounded-full"
+                  >
+                    <div
+                      id="ruler-dollar-ticks"
+                      class="absolute top-0 left-0 w-full h-full pointer-events-none"
+                    ></div>
+                  </div>
+
+                  <!-- Current Cost Label Container (Moves with Handle) -->
+                  <div
+                    id="current-cost-container"
+                    class="absolute top-0 bottom-0 w-[2px] pointer-events-none z-30"
+                    style="display: block"
+                  >
+                    <!-- Top Label (100%) safely pushed UP -->
+                    <div
+                      class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full pb-3 md:pb-5 z-30"
+                    >
+                      <div
+                        class="bg-[#4a2e15] text-[#cddc39] font-black text-[0.6rem] md:text-[0.95rem] px-2 md:px-3 py-0.5 md:py-1 rounded-full border-[1.5px] md:border-2 border-[#cddc39] shadow-lg whitespace-nowrap flex items-center justify-center gap-1"
+                      >
+                        100%
+                      </div>
+                    </div>
+
+                    <!-- Bottom Label (Current CP $) safely pushed DOWN -->
+                    <div
+                      class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full pt-8 md:pt-12 z-30"
+                    >
+                      <div
+                        class="bg-[#4a2e15] text-[#cddc39] font-black text-[0.65rem] md:text-[1.1rem] px-2 md:px-4 py-0.5 md:py-1 rounded-lg border-[1.5px] md:border-2 border-[#cddc39] shadow-lg whitespace-nowrap tracking-wide"
+                      >
+                        <span id="current-cost-value">$0</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Tutorial Hand Image Element (👆) -->
+                  <div
+                    id="tutorial-hand"
+                    class="absolute top-[120%] left-1/2 -translate-x-1/2 text-5xl md:text-7xl pointer-events-none z-[100] opacity-0"
+                    style="
+                      transition:
+                        top 0.4s ease-out,
+                        opacity 0.3s ease-out;
+                    "
+                  >
+                    👆
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bottom Input Area (20% Height) -->
-        <div
-          class="h-[20%] bg-white flex flex-row items-center justify-between px-12 py-0 gap-6 relative shadow-[0_-5px_15px_rgba(0,0,0,0.1)] z-30"
-        >
-          <div class="flex flex-col flex-1 text-left">
-            <div
-              id="question-text"
-              class="text-[2rem] text-gray-800 font-black tracking-wide"
-            >
-              Find the discount:
-            </div>
-            <div
-              id="question-hint"
-              class="text-[1.05rem] text-blue-600 font-bold mt-1 leading-tight"
-            >
-              Hint: Find the discount amount.
-            </div>
-          </div>
-
-          <div
-            id="input-container"
-            onclick="openNumpad(event)"
-            class="flex items-center justify-center w-auto text-4xl font-bold text-gray-800 bg-gray-100 border-2 border-gray-300 px-6 py-3 rounded-lg cursor-pointer min-w-[8.75rem] shadow-inner relative transition-colors"
-          >
-            <div class="flex items-center">
-              $
-              <span id="input-value-display" class="ml-3 text-teal-600">?</span>
-              <span
-                id="input-cursor"
-                class="animate-pulse ml-1.5 hidden text-teal-600"
-                >|</span
-              >
-            </div>
-
-            <!-- Numpad Popup - perfectly centered above the input button -->
-            <div
-              id="numpad-popup"
-              class="hidden absolute bottom-full left-1/2 -translate-x-1/2 mb-4 bg-teal-600 p-4 rounded-xl shadow-2xl border-4 border-teal-800 w-[17.5rem] transform origin-bottom transition-all duration-200 cursor-default"
-              onclick="event.stopPropagation()"
-            >
-              <button
-                onclick="closeNumpad()"
-                class="absolute -top-4 -right-4 bg-white text-teal-800 rounded-full p-1.5 shadow-md border-2 border-teal-800 hover:bg-gray-100 transition-transform active:scale-95"
-              >
-                <svg
-                  class="w-5 h-5 rotate-45"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M12 5v14" />
-                  <path d="M5 12h14" />
-                </svg>
-              </button>
-
-              <div class="grid grid-cols-4 gap-2">
-                <button
-                  onclick="handleNumpad('del')"
-                  class="col-span-1 bg-teal-500 hover:bg-teal-400 text-white rounded-full p-2 flex items-center justify-center shadow-md active:translate-y-1 transition-transform"
-                >
-                  <svg
-                    class="w-6 h-6"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="M3 6h18" />
-                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                  </svg>
-                </button>
-                <script>
-                  [1, 2, 3, 4, 5, 6, 7, 8, 9, ".", 0].forEach((num) => {
-                    document.write(
-                      `<button onclick="handleNumpad('${num}')" class="bg-teal-800 hover:bg-teal-700 text-white font-bold text-2xl rounded-full aspect-square flex items-center justify-center shadow-md border border-teal-600 active:translate-y-1 transition-transform">${num}</button>`,
-                    );
-                  });
-                </script>
-                <button
-                  onclick="handleNumpad('done')"
-                  class="col-span-4 bg-green-500 hover:bg-green-400 text-white font-bold rounded-full py-2.5 shadow-md active:translate-y-1 transition-transform flex items-center justify-center gap-2 text-lg"
-                >
-                  DONE
-                  <svg
-                    class="w-5 h-5"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </button>
               </div>
             </div>
           </div>
@@ -846,11 +830,9 @@
     </div>
 
     <!-- Audio Elements -->
-    <audio id="sound-wrong" src="sounds/wrong.mp3" preload="auto"></audio>
-    <audio id="sound-popper" src="sounds/popper.mp3" preload="auto"></audio>
-    <audio id="sound-correct" src="sounds/correct.mp3" preload="auto"></audio>
-    <audio id="sound-congrats" src="sounds/congrats.mp3" preload="auto"></audio>
-    <audio id="sound-bg" src="sounds/bg.mp3" preload="auto" loop></audio>
+    <audio id="sound-wrong" src="wrong.mp3" preload="auto"></audio>
+    <audio id="sound-popper" src="popper.mp3" preload="auto"></audio>
+    <audio id="sound-congrats" src="congrats.mp3" preload="auto"></audio>
 
     <!-- Javascript Logic -->
     <script>
@@ -868,15 +850,14 @@
 
       let questions = [];
       let currentLevelIndex = 0;
-      let inputValue = "";
 
       let rulerVal = 10;
       let maxPounds = 60;
       let isDragging = false;
       let isAnimating = true;
-      let markers = []; // Array to hold marker values
-      let currentStep = 1; // 1: Mark Original, 2: Mark Discounted, 3: Calculate difference
-      let toastTimeout; // Timeout reference for toast hiding
+      let isLevelComplete = false;
+      let isTutorialActive = false;
+      let isAnimatingCalculation = false;
 
       const DOM = {
         startScreen: document.getElementById("start-screen"),
@@ -886,19 +867,12 @@
 
         onScreenTitle: document.getElementById("on-screen-title"),
         onScreenDesc: document.getElementById("on-screen-desc"),
-        questionText: document.getElementById("question-text"),
-        questionHint: document.getElementById("question-hint"),
 
         toyImage: document.getElementById("toy-image"),
         toyFallback: document.getElementById("toy-fallback"),
         priceDisplay: document.getElementById("price-display"),
         tagDisplay: document.getElementById("tag-display"),
         priceLabel: document.getElementById("price-label"),
-
-        inputContainer: document.getElementById("input-container"),
-        inputValueDisplay: document.getElementById("input-value-display"),
-        inputCursor: document.getElementById("input-cursor"),
-        numpadPopup: document.getElementById("numpad-popup"),
 
         partyContainer: document.getElementById("party-popper-container"),
 
@@ -907,13 +881,36 @@
         percentTicks: document.getElementById("ruler-percent-ticks"),
         dollarTicks: document.getElementById("ruler-dollar-ticks"),
         rulerHandle: document.getElementById("ruler-handle"),
-        rulerMarkers: document.getElementById("ruler-markers"),
+        currentCostContainer: document.getElementById("current-cost-container"),
+        currentCostValue: document.getElementById("current-cost-value"),
+
+        submitBtn: document.getElementById("submit-btn"),
+        hintMarker: document.getElementById("hint-marker"),
+
+        rulerEquationPopup: document.getElementById("ruler-equation-popup"),
+        rulerEquationContent: document.getElementById("ruler-equation-content"),
+
+        successPopup: document.getElementById("success-popup"),
+        popupSp: document.getElementById("popup-sp"),
+        popupCp: document.getElementById("popup-cp"),
+        popupProfit: document.getElementById("popup-profit"),
+        nextLevelBtn: document.getElementById("next-level-btn"),
+
+        failurePopup: document.getElementById("failure-popup"),
+        failCalcSp: document.getElementById("fail-calc-sp"),
+        failTargetSp: document.getElementById("fail-target-sp"),
+
+        profitConnector: document.getElementById("profit-connector"),
+        profitMarkerLine: document.getElementById("profit-marker-line"),
+        profitPercentText: document.getElementById("profit-percent-text"),
+        profitMarkerValue: document.getElementById("profit-marker-value"),
+        profitMarkerValueBg: document.getElementById("profit-marker-value-bg"),
+
+        tutorialHand: document.getElementById("tutorial-hand"),
 
         soundWrong: document.getElementById("sound-wrong"),
         soundPopper: document.getElementById("sound-popper"),
-        soundCorrect: document.getElementById("sound-correct"),
         soundCongrats: document.getElementById("sound-congrats"),
-        soundBg: document.getElementById("sound-bg"),
       };
 
       function init() {
@@ -922,57 +919,13 @@
         loadLevel();
       }
 
-      function showToast(message, type = "info") {
-        const toast = document.getElementById("toast-message");
-
-        // Base classes with a custom spring easing for the bounce effect, made smaller
-        let baseClass =
-          "absolute top-4 md:top-6 left-1/2 transform -translate-x-1/2 -translate-y-[150%] opacity-0 z-[100] px-3 py-1.5 md:px-6 md:py-2 rounded-xl font-bold text-xs md:text-base text-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] pointer-events-none w-11/12 max-w-lg border-2 md:border-[3px] flex items-center justify-center gap-1.5 md:gap-2 whitespace-normal leading-tight shadow-xl";
-
-        let icon = "💡";
-        if (type === "success") {
-          toast.className =
-            baseClass +
-            " bg-[#f4fcf4] text-[#1B5E20] border-[#4CAF50] shadow-[0_4px_0_#1B5E20,0_10px_15px_rgba(0,0,0,0.2)]";
-          icon = "🌟";
-        } else if (type === "error") {
-          toast.className =
-            baseClass +
-            " bg-[#fff5f5] text-[#78281f] border-[#e74c3c] shadow-[0_4px_0_#78281f,0_10px_15px_rgba(0,0,0,0.2)]";
-          icon = "❌";
-        } else if (type === "warning") {
-          toast.className =
-            baseClass +
-            " bg-[#fffaf0] text-[#7e3300] border-[#f39c12] shadow-[0_4px_0_#a04000,0_10px_15px_rgba(0,0,0,0.2)]";
-          icon = "⚠️";
-        } else {
-          // INFO - Wood/Parchment Theme
-          toast.className =
-            baseClass +
-            " bg-[#fff8e7] text-[#4a2e15] border-[#8b5a2b] shadow-[0_4px_0_#5c3a1e,0_10px_15px_rgba(0,0,0,0.2)]";
-          icon = "💡";
-        }
-
-        toast.innerHTML = `<span class="text-base md:text-xl drop-shadow-sm">${icon}</span> <span class="drop-shadow-sm">${message}</span>`;
-
-        // Force reflow to ensure transitions work smoothly
-        void toast.offsetWidth;
-
-        // Animate into view
-        toast.classList.remove("-translate-y-[150%]", "opacity-0");
-        toast.classList.add("translate-y-0", "opacity-100");
-
-        clearTimeout(toastTimeout);
-        // Notifications now persist permanently!
-      }
-
       function generateQuestions(count) {
         const newQs = [];
         const easyCombos = [
-          { cp: 300, profitPercent: 10 },
-          { cp: 400, profitPercent: 20 },
-          { cp: 600, profitPercent: 25 },
-          { cp: 800, profitPercent: 50 },
+          { cp: 100, profitPercent: 10 },
+          { cp: 100, profitPercent: 20 },
+          { cp: 100, profitPercent: 25 },
+          { cp: 100, profitPercent: 50 },
           { cp: 200, profitPercent: 10 },
           { cp: 200, profitPercent: 20 },
           { cp: 200, profitPercent: 25 },
@@ -995,49 +948,32 @@
           const cp = combo.cp;
           const percent = combo.profitPercent;
 
-          const discountAmount = (cp * percent) / 100;
-          const discountedPrice = cp - discountAmount;
+          const profitAmount = (cp * percent) / 100;
+          const sp = cp + profitAmount;
 
-          // Always generate the Original Price -> Find Discount workflow
           newQs.push({
-            type: "find_discount_from_original",
             toyName: item.name,
             imageUrl: item.url,
-            priceLabel: "Original Price",
-            displayPrice: cp,
-            originalPrice: cp,
-            discountedPrice: discountedPrice,
-            percent: percent,
-            tagText: `Discount: ${percent}%`,
-            questionTitle: "Find the discount:",
-            questionHint: `Hint: Mark the Original Price, then mark the discounted value, and subtract them.`,
-            expectedAnswer: discountAmount,
-            modalTitle: "New Task!",
-            modalDesc: `Original Price: <b>$${cp}</b><br/>Discount: <b>${percent}%</b>`,
+            displayPrice: sp, // We display the selling price
+            profitPercent: percent,
+            expectedCP: cp,
+            modalTitle: "Find the Cost Price!",
+            modalDesc: `The item was sold for <b>$${sp}</b>, which includes a <b>${percent}%</b> profit on the cost.<br/>Drag the 100% handle so the Cost Price + Profit equals <b>$${sp}</b>!`,
           });
         }
         return newQs;
       }
 
       function loadLevel() {
+        isLevelComplete = false;
         const level = questions[currentLevelIndex];
-        inputValue = "";
-        markers = []; // Clear markers for the new level
-        currentStep = 1; // Reset to the first step
-        updateInputDisplay();
-
-        // Remove input glow from previous levels
-        DOM.inputContainer.classList.remove("input-ready-glow");
 
         DOM.onScreenTitle.innerText = level.modalTitle;
         DOM.onScreenDesc.innerHTML = level.modalDesc;
-        DOM.levelIndicator.innerHTML = `🌟 Level ${currentLevelIndex + 1} of ${TOTAL_QUESTIONS}`;
+        DOM.levelIndicator.innerHTML = `⭐ Level ${currentLevelIndex + 1} of ${TOTAL_QUESTIONS}`;
         DOM.priceDisplay.innerText = "$" + level.displayPrice;
-        DOM.tagDisplay.innerText = level.tagText;
-        DOM.priceLabel.innerText = level.priceLabel + ":";
-
-        DOM.questionText.innerText = level.questionTitle;
-        DOM.questionHint.innerText = level.questionHint;
+        DOM.tagDisplay.innerText = `Profit: ${level.profitPercent}%`;
+        DOM.priceLabel.innerText = "SELLING PRICE:";
 
         DOM.toyImage.classList.add("hidden");
         DOM.toyFallback.classList.add("hidden");
@@ -1054,10 +990,9 @@
         }
 
         isAnimating = true;
-        // Base the ruler width on the originalPrice so there is always room to mark the MRP!
-        let initVal = level.originalPrice;
+        let initVal = level.displayPrice;
 
-        let ideal = initVal * 1.2;
+        let ideal = initVal * 1.6;
         if (ideal < 10) ideal = 10;
 
         let newMax;
@@ -1070,46 +1005,81 @@
         else newMax = Math.ceil(ideal / 200) * 200;
 
         maxPounds = Math.max(60, newMax);
-
-        // Start the slider exactly 100 units below the Original Price (MRP), minimum 20 so it never looks broken at 0
-        rulerVal = Math.max(20, level.originalPrice - 100);
-
+        rulerVal = initVal;
         renderRuler();
-
-        // Introduce the step cleanly if the game has already started
-        setTimeout(() => {
-          if (DOM.startScreen.classList.contains("hidden")) {
-            showToast(
-              "Slide the 100% handle to find the correct Cost Price!",
-              "info",
-            );
-          }
-        }, 500);
       }
 
       function startGame() {
-        DOM.startScreen.style.opacity = "0";
+        DOM.startScreen.classList.add("hidden");
+        runTutorialSequence();
+      }
 
-        // Start background music when they begin
-        DOM.soundBg.currentTime = 0;
-        DOM.soundBg.volume = 0.3; // keep it subtle
-        DOM.soundBg.play().catch((e) => console.log("Audio error:", e));
+      async function runTutorialSequence() {
+        isTutorialActive = true;
+        isAnimating = false;
 
-        setTimeout(() => {
-          DOM.startScreen.classList.add("hidden");
-          // Show the initial toast exactly when the game screen becomes fully visible
-          showToast(
-            "Slide the 100% handle to find the correct Cost Price!",
-            "info",
-          );
-        }, 500);
+        await new Promise((r) => setTimeout(r, 200));
+
+        const hand = DOM.tutorialHand;
+        const startVal = rulerVal;
+        const endVal = questions[0].expectedCP;
+        const startXPercent = (startVal / maxPounds) * 100;
+
+        hand.style.left = `${startXPercent}%`;
+        hand.style.opacity = "1";
+        hand.style.top = "120%";
+
+        await new Promise((r) => setTimeout(r, 300));
+        hand.style.top = "50%";
+
+        await new Promise((r) => setTimeout(r, 600));
+
+        hand.classList.add("hand-clicking");
+        await new Promise((r) => setTimeout(r, 400));
+
+        const duration = 1500;
+        const startTime = performance.now();
+
+        return new Promise((resolve) => {
+          function step(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            const easeProgress = progress * (2 - progress);
+
+            rulerVal = startVal - (startVal - endVal) * easeProgress;
+            const currentPercent = (rulerVal / maxPounds) * 100;
+
+            hand.style.left = `${currentPercent}%`;
+            updateRulerVisualsOnly();
+
+            if (progress < 1) {
+              requestAnimationFrame(step);
+            } else {
+              finish();
+            }
+          }
+
+          function finish() {
+            hand.classList.remove("hand-clicking");
+            setTimeout(() => {
+              hand.style.top = "120%";
+              hand.style.opacity = "0";
+              setTimeout(() => {
+                isTutorialActive = false;
+                isAnimating = true;
+                rulerVal = startVal;
+                updateRulerVisualsOnly();
+                resolve();
+              }, 500);
+            }, 300);
+          }
+
+          requestAnimationFrame(step);
+        });
       }
 
       function restartGame() {
-        const toast = document.getElementById("toast-message");
-        toast.classList.remove("translate-y-0", "opacity-100");
-        toast.classList.add("-translate-y-[150%]", "opacity-0");
-
         DOM.endScreen.classList.add("hidden");
         DOM.gameScreen.classList.remove("hidden");
         DOM.gameScreen.classList.add("flex");
@@ -1117,227 +1087,191 @@
 
         DOM.startScreen.classList.remove("hidden");
         DOM.startScreen.style.opacity = "1";
-
-        // Ensure BG Music loops around or plays again gracefully
-        DOM.soundBg.currentTime = 0;
-        DOM.soundBg.play().catch((e) => console.log("Audio error:", e));
-
         init();
       }
 
-      function openNumpad(e) {
-        e.stopPropagation();
+      async function checkWinCondition() {
+        if (isTutorialActive || isAnimatingCalculation) return;
 
-        // Enforce Workflow: User must place both pins first before calculating.
-        if (currentStep < 3) {
-          showToast(
-            "Please mark the Original Price and Discounted Price on the ruler first!",
-            "warning",
-            4000,
-          );
-          return;
-        }
-
-        DOM.numpadPopup.classList.remove("hidden");
-        DOM.inputCursor.classList.remove("hidden");
-        DOM.inputContainer.classList.add("ring-2", "ring-teal-400");
-
-        // Remove glow once they interact with it
-        DOM.inputContainer.classList.remove("input-ready-glow");
-      }
-
-      function closeNumpad() {
-        DOM.numpadPopup.classList.add("hidden");
-        DOM.inputCursor.classList.add("hidden");
-        DOM.inputContainer.classList.remove("ring-2", "ring-teal-400");
-      }
-
-      document.body.addEventListener("click", (e) => {
-        if (!DOM.numpadPopup.classList.contains("hidden")) closeNumpad();
-      });
-
-      document.addEventListener("keydown", (e) => {
-        if (
-          DOM.gameScreen.classList.contains("hidden") ||
-          !DOM.startScreen.classList.contains("hidden")
-        )
-          return;
-
-        const key = e.key;
-        if (/^[0-9]$/.test(key)) {
-          handleNumpad(key);
-        } else if (key === "." || key === ",") {
-          handleNumpad(".");
-        } else if (key === "Backspace") {
-          handleNumpad("del");
-        } else if (key === "Enter") {
-          handleNumpad("done");
-        }
-      });
-
-      function handleNumpad(val) {
-        if (val === "del") {
-          inputValue = inputValue.slice(0, -1);
-        } else if (val === "done") {
-          checkAnswer();
-          return;
-        } else {
-          if (val === "." && inputValue.includes(".")) return;
-          if (inputValue.length < 6) inputValue += val;
-        }
-        updateInputDisplay();
-      }
-
-      function updateInputDisplay() {
-        DOM.inputValueDisplay.innerText = inputValue || "?";
-      }
-
-      function checkAnswer() {
-        if (inputValue === "") {
-          closeNumpad();
-          return;
-        }
-
+        isAnimatingCalculation = true;
         const level = questions[currentLevelIndex];
-        if (parseFloat(inputValue) === level.expectedAnswer) {
-          closeNumpad();
 
-          // Play the correct answer sound effect
-          DOM.soundCorrect.currentTime = 0;
-          DOM.soundCorrect.play().catch((e) => console.log("Audio error:", e));
+        // Snapped value calculation
+        const snappedVal = Math.round(rulerVal / 10) * 10;
 
+        const calculatedProfit = Math.round(
+          (snappedVal * level.profitPercent) / 100,
+        );
+        const calculatedSP = snappedVal + calculatedProfit;
+        const targetSP = level.displayPrice;
+
+        // --- SLOW ANIMATION SEQUENCE: Sliding the Profit Marker ---
+
+        // 1. Auto-Zoom: Check if the new combined position will fall off the right edge
+        const neededMax = calculatedSP * 1.15; // 15% buffer
+        if (neededMax > maxPounds) {
+          isAnimatingCalculation = false;
+          maxPounds = neededMax;
+          renderRuler();
+          await new Promise((r) => setTimeout(r, 1000)); // Wait for slow zoom
+          isAnimatingCalculation = true;
+        }
+
+        // 2. Prepare SLOW CSS Transitions for the slide
+        DOM.profitMarkerLine.style.transition =
+          "left 2.5s cubic-bezier(0.4, 0, 0.2, 1)";
+        DOM.profitConnector.style.transition =
+          "left 2.5s cubic-bezier(0.4, 0, 0.2, 1), width 2.5s cubic-bezier(0.4, 0, 0.2, 1)";
+
+        // 3. Change text slightly to indicate addition operation (+25%)
+        DOM.profitPercentText.innerText = "+" + level.profitPercent + "%";
+        DOM.profitMarkerValue.innerText = "+$" + calculatedProfit;
+
+        await new Promise((r) => requestAnimationFrame(r)); // Yield render
+
+        // 4. Calculate new positions
+        let cpPercent = (snappedVal / maxPounds) * 100;
+        let profitPercent = (calculatedProfit / maxPounds) * 100;
+        let targetPercentX = cpPercent + profitPercent;
+
+        // Apply SLOW slide!
+        DOM.profitMarkerLine.style.left = `${targetPercentX}%`;
+        DOM.profitConnector.style.left = `${cpPercent}%`;
+        DOM.profitConnector.style.width = `${profitPercent}%`;
+
+        // Wait for slow physical slide to finish
+        await new Promise((r) => setTimeout(r, 2600));
+
+        // 5. Expand TOP label (Equation Popup) to show the math beautifully
+        const isCorrect = snappedVal === level.expectedCP;
+
+        let equationHTML = `
+            <span class="bg-[#cddc39] text-[#4a2e15] px-1.5 py-0.5 md:px-2 md:py-1 rounded-md shadow-sm">$${snappedVal}</span> 
+            <span class="text-white mx-0.5 md:mx-1">+</span> 
+            <span class="text-yellow-400 drop-shadow-sm">$${calculatedProfit}</span> 
+            <span class="text-white mx-0.5 md:mx-1">=</span> 
+        `;
+
+        if (isCorrect) {
+          equationHTML += `<span class="text-green-400 drop-shadow-sm">$${calculatedSP}</span>`;
+          DOM.rulerEquationContent.className =
+            "text-white px-3 py-1.5 md:px-5 md:py-2.5 rounded-xl border-2 md:border-[3px] border-green-400 bg-[#1e3a2f] shadow-2xl text-xs md:text-xl font-black tracking-wide whitespace-nowrap flex items-center gap-1.5 md:gap-2";
+        } else {
+          equationHTML += `<span class="text-red-400 drop-shadow-sm">$${calculatedSP} &ne; $${targetSP}</span>`;
+          DOM.rulerEquationContent.className =
+            "text-white px-3 py-1.5 md:px-5 md:py-2.5 rounded-xl border-2 md:border-[3px] border-red-500 bg-[#3a1e1e] shadow-2xl text-xs md:text-xl font-black tracking-wide whitespace-nowrap flex items-center gap-1.5 md:gap-2";
+        }
+
+        DOM.rulerEquationContent.innerHTML = equationHTML;
+
+        // Position it perfectly centered over the added segment
+        DOM.rulerEquationPopup.style.left = `${cpPercent}%`;
+        DOM.rulerEquationPopup.style.width = `${profitPercent}%`;
+        DOM.rulerEquationPopup.classList.remove("opacity-0");
+
+        // Give player a solid 3 seconds to digest the math above the ruler
+        await new Promise((r) => setTimeout(r, 3000));
+
+        // 6. Resolve Popups based on Win/Loss
+        if (isCorrect) {
+          isLevelComplete = true;
           triggerPartyPopper();
 
-          setTimeout(() => {
-            if (currentLevelIndex < questions.length - 1) {
-              currentLevelIndex++;
-              loadLevel();
-            } else {
-              showEndScreen();
-            }
-          }, 3000);
+          DOM.popupCp.innerText = level.expectedCP;
+          DOM.popupProfit.innerText = calculatedProfit;
+          DOM.popupSp.innerText = targetSP;
+
+          if (currentLevelIndex === questions.length - 1) {
+            DOM.nextLevelBtn.innerHTML = `FINISH <svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5l10 -10" /></svg>`;
+          } else {
+            DOM.nextLevelBtn.innerHTML = `NEXT LEVEL <svg class="w-6 h-6 md:w-8 md:h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>`;
+          }
+
+          DOM.successPopup.classList.remove("hidden");
+          void DOM.successPopup.offsetWidth;
+          DOM.successPopup.classList.remove("opacity-0");
+          DOM.successPopup.querySelector("div").classList.remove("scale-90");
+          DOM.successPopup.querySelector("div").classList.add("scale-100");
         } else {
           DOM.soundWrong.currentTime = 0;
           DOM.soundWrong.play().catch((e) => console.log("Audio error:", e));
 
-          DOM.inputContainer.classList.add("shake-animation");
-          setTimeout(() => {
-            DOM.inputContainer.classList.remove("shake-animation");
-            inputValue = "";
-            updateInputDisplay();
-            closeNumpad();
-          }, 400);
+          DOM.submitBtn.classList.remove("animate-shake");
+          void DOM.submitBtn.offsetWidth;
+          DOM.submitBtn.classList.add("animate-shake");
+
+          DOM.failCalcSp.innerText = calculatedSP;
+          DOM.failTargetSp.innerText = targetSP;
+
+          DOM.failurePopup.classList.remove("hidden");
+          void DOM.failurePopup.offsetWidth;
+          DOM.failurePopup.classList.remove("opacity-0");
+          DOM.failurePopup.querySelector("div").classList.remove("scale-90");
+          DOM.failurePopup.querySelector("div").classList.add("scale-100");
         }
+      }
+
+      function hideFailurePopup() {
+        DOM.failurePopup.classList.add("opacity-0");
+        DOM.failurePopup.querySelector("div").classList.remove("scale-100");
+        DOM.failurePopup.querySelector("div").classList.add("scale-90");
+
+        setTimeout(() => {
+          DOM.failurePopup.classList.add("hidden");
+
+          // Reset Ruler Anim logic & hide equation
+          isAnimatingCalculation = false;
+          DOM.rulerEquationPopup.classList.add("opacity-0");
+          DOM.profitMarkerLine.style.transition = "none";
+          DOM.profitConnector.style.transition = "none";
+
+          updateRulerVisualsOnly();
+
+          const level = questions[currentLevelIndex];
+          const correctPercentX = (level.expectedCP / maxPounds) * 100;
+          DOM.hintMarker.style.left = `${correctPercentX}%`;
+          DOM.hintMarker.style.transform = `translateX(-50%)`;
+
+          DOM.hintMarker.classList.remove("animate-blink-marker");
+          void DOM.hintMarker.offsetWidth;
+          DOM.hintMarker.classList.add("animate-blink-marker");
+        }, 300);
+      }
+
+      function advanceToNextLevel() {
+        DOM.successPopup.classList.add("opacity-0");
+        DOM.successPopup.querySelector("div").classList.remove("scale-100");
+        DOM.successPopup.querySelector("div").classList.add("scale-90");
+
+        setTimeout(() => {
+          DOM.successPopup.classList.add("hidden");
+
+          // Reset animation logic
+          isAnimatingCalculation = false;
+          DOM.rulerEquationPopup.classList.add("opacity-0");
+          DOM.profitMarkerLine.style.transition = "none";
+          DOM.profitConnector.style.transition = "none";
+
+          if (currentLevelIndex < questions.length - 1) {
+            currentLevelIndex++;
+            loadLevel();
+          } else {
+            showEndScreen();
+          }
+        }, 300);
       }
 
       function showEndScreen() {
         DOM.gameScreen.classList.add("hidden");
         DOM.endScreen.classList.remove("hidden");
-
-        // Stop the background music for the big reveal!
-        DOM.soundBg.pause();
-
         DOM.soundCongrats.currentTime = 0;
         DOM.soundCongrats.play().catch((e) => console.log("Audio error:", e));
         triggerPartyPopper(true);
       }
 
-      // MARKER FUNCTIONS - Added Guided Workflow
-      function addMarker() {
-        const level = questions[currentLevelIndex];
-
-        // Calculate the visible grid gap (major step) to determine a fair tolerance
-        let majorStep = 10;
-        if (maxPounds <= 12) majorStep = 1;
-        else if (maxPounds <= 25) majorStep = 2;
-        else if (maxPounds <= 60) majorStep = 5;
-        else if (maxPounds <= 120) majorStep = 10;
-        else if (maxPounds <= 250) majorStep = 20;
-        else if (maxPounds <= 600) majorStep = 50;
-        else if (maxPounds <= 1200) majorStep = 100;
-        else majorStep = 200;
-
-        // Tolerance is exactly 20% of the visible gap (e.g., gap of 50 = tolerance 10)
-        const tolerance = Math.max(2, majorStep * 0.2);
-
-        if (currentStep === 1) {
-          // Looking for Original Price
-          const target = level.originalPrice;
-
-          if (Math.abs(rulerVal - target) <= tolerance) {
-            // Success!
-            markers.push(target); // Snap exact target for clean look
-            currentStep = 2;
-            renderRuler();
-            DOM.soundCorrect.currentTime = 0;
-            DOM.soundCorrect.play().catch((e) => console.log("Audio error", e));
-            showToast(
-              `Good job! Now find the discounted price, then slide and MARK it.`,
-              "success",
-              6000,
-            );
-          } else {
-            DOM.soundWrong.currentTime = 0;
-            DOM.soundWrong.play().catch((e) => console.log("Audio error", e));
-            showToast(
-              `Not quite! Try to find the correct Original Price (MRP).`,
-              "error",
-              4000,
-            );
-          }
-        } else if (currentStep === 2) {
-          // Looking for Discounted Price
-          const target = level.discountedPrice;
-
-          if (Math.abs(rulerVal - target) <= tolerance) {
-            // Success!
-            markers.push(target);
-            currentStep = 3;
-            renderRuler();
-            DOM.soundCorrect.currentTime = 0;
-            DOM.soundCorrect.play().catch((e) => console.log("Audio error", e));
-            showToast(
-              "Great! Both pins are placed. Now calculate the difference and enter the discount!",
-              "success",
-              6000,
-            );
-
-            // Highlight the answer box to tell the student it's time to type!
-            DOM.inputContainer.classList.add("input-ready-glow");
-          } else {
-            DOM.soundWrong.currentTime = 0;
-            DOM.soundWrong.play().catch((e) => console.log("Audio error", e));
-            showToast(
-              `Not quite! Remember to apply the ${level.percent}% discount to find the correct price.`,
-              "error",
-              4000,
-            );
-          }
-        } else {
-          // Already marked everything
-          showToast(
-            "You've already marked the prices! Calculate the difference and enter the discount.",
-            "info",
-            4000,
-          );
-        }
-      }
-
-      function clearMarkers() {
-        markers = [];
-        currentStep = 1;
-        DOM.inputContainer.classList.remove("input-ready-glow");
-        showToast(
-          "Pins cleared. Step 1: Mark the Original Price.",
-          "info",
-          4000,
-        );
-
-        // Removed dynamic scaling - Ruler stays rigidly locked to its original size!
-        renderRuler();
-      }
-
       function handlePointerDown(e) {
+        if (isLevelComplete || isTutorialActive || isAnimatingCalculation)
+          return;
         isAnimating = false;
         isDragging = true;
         updateDrag(e);
@@ -1352,30 +1286,48 @@
         document.removeEventListener("pointermove", updateDrag);
         document.removeEventListener("pointerup", handlePointerUp);
         isAnimating = true;
+        rulerVal = Math.round(rulerVal / 10) * 10;
 
-        // Removed dynamic scaling - Ruler stays rigidly locked to its original size!
+        let ideal = rulerVal * 1.6;
+        if (ideal < 10) ideal = 10;
+
+        let newMax;
+        if (ideal <= 20) newMax = Math.ceil(ideal / 2) * 2;
+        else if (ideal <= 50) newMax = Math.ceil(ideal / 5) * 5;
+        else if (ideal <= 100) newMax = Math.ceil(ideal / 10) * 10;
+        else if (ideal <= 250) newMax = Math.ceil(ideal / 20) * 20;
+        else if (ideal <= 600) newMax = Math.ceil(ideal / 50) * 50;
+        else if (ideal <= 1200) newMax = Math.ceil(ideal / 100) * 100;
+        else newMax = Math.ceil(ideal / 200) * 200;
+
+        maxPounds = newMax;
         renderRuler();
       }
 
       function updateDrag(e) {
-        if (!isDragging) return;
+        if (
+          !isDragging ||
+          isLevelComplete ||
+          isTutorialActive ||
+          isAnimatingCalculation
+        )
+          return;
 
         const x = e.clientX ?? e.touches?.[0]?.clientX;
         if (x === undefined || x === null) return;
 
         const rect = DOM.rulerTrackArea.getBoundingClientRect();
-
-        const rem = parseFloat(
-          getComputedStyle(document.documentElement).fontSize,
-        );
-        const trackWidthPx = rect.width - 1.875 * rem;
+        const trackWidthPx = rect.width;
 
         const pointerX = x - rect.left;
         let percentX = pointerX / trackWidthPx;
 
-        // Prevent dragging out of bounds without stretching the ruler
-        if (percentX > 1) percentX = 1;
-        if (percentX < 0) percentX = 0;
+        if (percentX > 0.95) {
+          maxPounds *= 1.03;
+          percentX = 0.95;
+          renderRuler();
+        }
+        if (percentX < 0.05) percentX = 0.05;
 
         rulerVal = percentX * maxPounds;
         updateRulerVisualsOnly();
@@ -1383,10 +1335,7 @@
 
       DOM.rulerHandle.addEventListener("pointerdown", handlePointerDown);
       DOM.rulerTrackArea.addEventListener("pointerdown", (e) => {
-        if (
-          e.target !== DOM.rulerHandle &&
-          !e.target.closest("#ruler-markers")
-        ) {
+        if (e.target !== DOM.rulerHandle && e.target !== DOM.profitMarkerLine) {
           handlePointerDown(e);
         }
       });
@@ -1431,81 +1380,86 @@
 
       function renderRuler() {
         const transClass = isAnimating ? "ruler-animating" : "";
-        // Lock the percentage track to the first marker (MRP) once placed!
-        const topTrackVal = markers.length > 0 ? markers[0] : rulerVal;
-        const topTrackWidthPercent = (topTrackVal / maxPounds) * 100;
-
-        let visiblePercentTicks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-        if (topTrackWidthPercent < 30) visiblePercentTicks = [0, 50, 100];
-        else if (topTrackWidthPercent < 60)
-          visiblePercentTicks = [0, 20, 40, 60, 80, 100];
-
-        let percentHtml = "";
-        [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100].forEach((tick) => {
-          const isVisible = visiblePercentTicks.includes(tick);
-          percentHtml += `
-                    <div class="absolute top-1/2 -translate-y-1/2 flex flex-col items-center transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"}" style="left: ${tick}%; transform: translate(-50%, -50%)">
-                        <div class="text-[#dce775] font-bold text-base mb-3 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">${tick}%</div>
-                        <div class="w-[3px] h-4 bg-[#dce775] shadow-[0_1px_3px_rgba(220,231,117,0.6)]"></div>
-                    </div>`;
-        });
-        DOM.percentTicks.innerHTML = percentHtml;
-
         const { majorTicks, minorTicks } = getPoundTicks(maxPounds);
         let dollarHtml = "";
         minorTicks.forEach((i) => {
-          dollarHtml += `<div class="absolute top-0 flex flex-col items-center ${transClass}" style="left: ${(i / maxPounds) * 100}%; transform: translateX(-50%)"><div class="w-[2px] bg-white/70 shadow-[0_1px_2px_rgba(0,0,0,0.3)] h-2"></div></div>`;
+          dollarHtml += `<div class="absolute top-0 flex flex-col items-center ${transClass} opacity-40" style="left: ${(i / maxPounds) * 100}%; transform: translateX(-50%)"><div class="w-[1.5px] md:w-[1.5px] bg-white shadow-sm h-1.5 md:h-2.5"></div></div>`;
         });
         majorTicks.forEach((i) => {
-          dollarHtml += `<div class="absolute top-0 flex flex-col items-center ${transClass}" style="left: ${(i / maxPounds) * 100}%; transform: translateX(-50%)"><div class="w-[3px] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.5)] h-5"></div><div class="text-white font-bold text-xl mt-2 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] whitespace-nowrap">${i}</div></div>`;
+          dollarHtml += `<div class="absolute top-0 flex flex-col items-center ${transClass} opacity-90" style="left: ${(i / maxPounds) * 100}%; transform: translateX(-50%)"><div class="w-[1.5px] md:w-[2px] bg-white shadow-sm h-2.5 md:h-4"></div><div class="text-white font-bold text-[0.85rem] md:text-[1.1rem] mt-1 md:mt-1.5 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] whitespace-nowrap">${i}</div></div>`;
         });
         DOM.dollarTicks.innerHTML = dollarHtml;
-
-        // Render Markers
-        if (DOM.rulerMarkers) {
-          let markersHtml = "";
-          markers.forEach((m, idx) => {
-            const colorClass = idx === 0 ? "bg-blue-500" : "bg-purple-500";
-            const borderClass =
-              idx === 0 ? "border-blue-700" : "border-purple-700";
-            const shadowClass =
-              idx === 0 ? "shadow-[0_0_5px_blue]" : "shadow-[0_0_5px_purple]";
-            const posPercent = (m / maxPounds) * 100;
-
-            if (posPercent >= 0 && posPercent <= 100) {
-              markersHtml += `
-                <div class="absolute top-0 bottom-0 flex flex-col items-center justify-center transition-all duration-300" style="left: ${posPercent}%; transform: translateX(-50%)">
-                    <div class="w-[3px] h-full ${colorClass} ${shadowClass} absolute top-0"></div>
-                    <div class="${colorClass} text-white font-black text-xs md:text-sm px-1.5 md:px-2 py-0.5 rounded shadow-md whitespace-nowrap border-2 ${borderClass} z-50 relative">
-                        $${Math.round(m)}
-                    </div>
-                    <div class="w-3 h-3 md:w-4 md:h-4 rounded-full ${colorClass} absolute bottom-1 border-2 border-white shadow-sm z-50"></div>
-                </div>`;
-            }
-          });
-          DOM.rulerMarkers.innerHTML = markersHtml;
-        }
-
         updateRulerVisualsOnly();
       }
 
       function updateRulerVisualsOnly() {
-        const handlePercent = (rulerVal / maxPounds) * 100;
+        const topTrackWidthPercent = (rulerVal / maxPounds) * 100;
+        const level = questions[currentLevelIndex];
+        const targetPercent = level ? level.profitPercent : 0;
 
-        // Lock the percentage track to the first marker (MRP) once placed!
-        const topTrackVal = markers.length > 0 ? markers[0] : rulerVal;
-        const topTrackWidthPercent = (topTrackVal / maxPounds) * 100;
+        let percentHtml = "";
+        for (let tick = 0; tick <= 100; tick += 10) {
+          const isSpecialTarget = level && tick === targetPercent;
+          if (tick === 100 || isSpecialTarget) continue;
+          let showText = false;
+          if (topTrackWidthPercent < 20) showText = tick % 50 === 0;
+          else if (topTrackWidthPercent < 35) showText = tick % 25 === 0;
+          else showText = tick % 20 === 0;
+          const tickHeight = showText ? "h-2.5 md:h-4" : "h-1.5 md:h-2.5";
+          const opacity = showText ? "opacity-80" : "opacity-40";
+          const physicalLeftPercent = tick * (topTrackWidthPercent / 100);
+          if (physicalLeftPercent <= 100) {
+            percentHtml += `
+                        <div class="absolute top-1/2 -translate-y-1/2 flex flex-col items-center ${opacity} pointer-events-none" style="left: ${physicalLeftPercent}%; transform: translate(-50%, -50%)">
+                            ${showText ? `<div class="text-[#dce775] font-bold text-[0.85rem] md:text-[1.1rem] mb-1 md:mb-1.5 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] whitespace-nowrap">${tick}%</div>` : `<div class="mb-1 md:mb-1.5"></div>`}
+                            <div class="w-[1.5px] md:w-[2px] ${tickHeight} bg-white shadow-sm"></div>
+                        </div>`;
+          }
+        }
+        DOM.percentTicks.innerHTML = percentHtml;
 
-        if (isAnimating) {
+        const useTransition =
+          isAnimating && !isTutorialActive && !isAnimatingCalculation;
+        if (useTransition) {
           DOM.topTrack.classList.add("ruler-animating");
+          DOM.profitMarkerLine.classList.add("ruler-animating");
           DOM.rulerHandle.classList.add("ruler-animating");
+          DOM.profitConnector.classList.add("ruler-animating");
+          DOM.currentCostContainer.classList.add("ruler-animating");
         } else {
           DOM.topTrack.classList.remove("ruler-animating");
+          DOM.profitMarkerLine.classList.remove("ruler-animating");
           DOM.rulerHandle.classList.remove("ruler-animating");
+          DOM.profitConnector.classList.remove("ruler-animating");
+          DOM.currentCostContainer.classList.remove("ruler-animating");
         }
 
         DOM.topTrack.style.width = `${topTrackWidthPercent}%`;
-        DOM.rulerHandle.style.left = `${handlePercent}%`;
+        DOM.currentCostContainer.style.left = `${topTrackWidthPercent}%`;
+        DOM.currentCostContainer.style.transform = `translateX(-50%)`;
+
+        if (DOM.currentCostValue) {
+          DOM.currentCostValue.innerText = "$" + Math.round(rulerVal);
+        }
+
+        // Only enforce rigid marker positioning if NOT running our custom calculation slider
+        if (!isAnimatingCalculation) {
+          if (level && level.profitPercent) {
+            const xPos = (targetPercent / 100) * topTrackWidthPercent;
+            DOM.profitMarkerLine.style.display = "block";
+            DOM.profitMarkerLine.style.left = `${xPos}%`;
+            DOM.profitMarkerLine.style.transform = `translateX(-50%)`;
+            DOM.profitConnector.style.display = "block";
+            DOM.profitConnector.style.left = `0%`;
+            DOM.profitConnector.style.width = `${xPos}%`;
+            DOM.profitPercentText.innerText = level.profitPercent + "%";
+            DOM.profitMarkerValue.innerText =
+              "$" + Math.round((targetPercent / 100) * rulerVal);
+          } else {
+            DOM.profitMarkerLine.style.display = "none";
+            DOM.profitConnector.style.display = "none";
+          }
+        }
       }
 
       function triggerPartyPopper(continuous = false) {

@@ -140,24 +140,6 @@
         animation: handClick 0.4s ease-in-out;
       }
 
-      @keyframes readyGlow {
-        0% {
-          box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
-        }
-        70% {
-          box-shadow: 0 0 0 15px rgba(76, 175, 80, 0);
-        }
-        100% {
-          box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
-        }
-      }
-      .input-ready-glow {
-        animation: readyGlow 1.5s infinite;
-        border-color: #4caf50 !important;
-        background-color: #e8f5e9 !important;
-        color: #1b5e20 !important;
-      }
-
       .perspective-1000 {
         perspective: 1000px;
       }
@@ -179,7 +161,7 @@
       <!-- Toast Notification Container -->
       <div
         id="toast-message"
-        class="absolute top-4 md:top-6 left-1/2 transform -translate-x-1/2 -translate-y-[150%] opacity-0 z-[100] px-3 py-1.5 md:px-6 md:py-2 rounded-xl font-bold text-xs md:text-base text-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] pointer-events-none w-11/12 max-w-lg border-2 md:border-[3px] flex items-center justify-center gap-1.5 md:gap-2 whitespace-normal leading-tight shadow-xl bg-[#fff8e7] text-[#4a2e15] border-[#8b5a2b]"
+        class="absolute top-4 md:top-8 left-1/2 transform -translate-x-1/2 -translate-y-[150%] opacity-0 z-[100] px-4 py-2.5 md:px-8 md:py-4 rounded-2xl font-black text-sm md:text-xl text-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] pointer-events-none w-11/12 max-w-2xl border-[3px] md:border-[4px] flex items-center justify-center gap-2 md:gap-3 whitespace-normal leading-tight shadow-2xl bg-[#fff8e7] text-[#4a2e15] border-[#8b5a2b]"
       ></div>
 
       <!-- Party Popper Container -->
@@ -602,40 +584,40 @@
                     class="absolute left-0 h-[4px] bg-[#dce775] shadow-[0_1px_5px_rgba(220,231,117,0.8)] origin-left"
                   >
                     <div id="ruler-percent-ticks"></div>
-                  </div>
 
-                  <!-- Draggable Handle (Separated from top track to allow locking) -->
-                  <div
-                    id="ruler-handle"
-                    class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-[#dce775]/20 border-4 border-[#dce775] shadow-[0_0_8px_rgba(220,231,117,0.8)] cursor-ew-resize flex items-center justify-center z-30 hover:scale-110 transition-transform touch-none"
-                  >
+                    <!-- 100% Draggable Handle -->
                     <div
-                      class="w-3 h-3 rounded-full bg-[#cddc39] shadow-[0_0_6px_2px_#cddc39]"
-                    ></div>
-                    <svg
-                      class="w-4 h-4 text-[#dce775] absolute -left-3"
-                      stroke-width="3"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      id="ruler-handle"
+                      class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-8 h-8 rounded-full bg-[#dce775]/20 border-4 border-[#dce775] shadow-[0_0_8px_rgba(220,231,117,0.8)] cursor-ew-resize flex items-center justify-center z-30 hover:scale-110 transition-transform touch-none"
                     >
-                      <path d="m15 18-6-6 6-6" />
-                    </svg>
-                    <svg
-                      class="w-4 h-4 text-[#dce775] absolute -right-3"
-                      stroke-width="3"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="m9 18 6-6-6-6" />
-                    </svg>
+                      <div
+                        class="w-3 h-3 rounded-full bg-[#cddc39] shadow-[0_0_6px_2px_#cddc39]"
+                      ></div>
+                      <svg
+                        class="w-4 h-4 text-[#dce775] absolute -left-3"
+                        stroke-width="3"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="m15 18-6-6 6-6" />
+                      </svg>
+                      <svg
+                        class="w-4 h-4 text-[#dce775] absolute -right-3"
+                        stroke-width="3"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="m9 18 6-6-6-6" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
 
@@ -922,38 +904,38 @@
         loadLevel();
       }
 
-      function showToast(message, type = "info") {
+      function showToast(message, type = "info", duration = 3000) {
         const toast = document.getElementById("toast-message");
 
-        // Base classes with a custom spring easing for the bounce effect, made smaller
+        // Base classes with a custom spring easing for the bounce effect
         let baseClass =
-          "absolute top-4 md:top-6 left-1/2 transform -translate-x-1/2 -translate-y-[150%] opacity-0 z-[100] px-3 py-1.5 md:px-6 md:py-2 rounded-xl font-bold text-xs md:text-base text-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] pointer-events-none w-11/12 max-w-lg border-2 md:border-[3px] flex items-center justify-center gap-1.5 md:gap-2 whitespace-normal leading-tight shadow-xl";
+          "absolute top-4 md:top-8 left-1/2 transform -translate-x-1/2 -translate-y-[150%] opacity-0 z-[100] px-4 py-2.5 md:px-8 md:py-4 rounded-2xl font-black text-sm md:text-xl text-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] pointer-events-none w-11/12 max-w-2xl border-[3px] md:border-[4px] flex items-center justify-center gap-2 md:gap-3 whitespace-normal leading-tight shadow-2xl";
 
         let icon = "💡";
         if (type === "success") {
           toast.className =
             baseClass +
-            " bg-[#f4fcf4] text-[#1B5E20] border-[#4CAF50] shadow-[0_4px_0_#1B5E20,0_10px_15px_rgba(0,0,0,0.2)]";
+            " bg-[#f4fcf4] text-[#1B5E20] border-[#4CAF50] shadow-[0_6px_0_#1B5E20,0_15px_20px_rgba(0,0,0,0.3)]";
           icon = "🌟";
         } else if (type === "error") {
           toast.className =
             baseClass +
-            " bg-[#fff5f5] text-[#78281f] border-[#e74c3c] shadow-[0_4px_0_#78281f,0_10px_15px_rgba(0,0,0,0.2)]";
+            " bg-[#fff5f5] text-[#78281f] border-[#e74c3c] shadow-[0_6px_0_#78281f,0_15px_20px_rgba(0,0,0,0.3)]";
           icon = "❌";
         } else if (type === "warning") {
           toast.className =
             baseClass +
-            " bg-[#fffaf0] text-[#7e3300] border-[#f39c12] shadow-[0_4px_0_#a04000,0_10px_15px_rgba(0,0,0,0.2)]";
+            " bg-[#fffaf0] text-[#7e3300] border-[#f39c12] shadow-[0_6px_0_#a04000,0_15px_20px_rgba(0,0,0,0.3)]";
           icon = "⚠️";
         } else {
           // INFO - Wood/Parchment Theme
           toast.className =
             baseClass +
-            " bg-[#fff8e7] text-[#4a2e15] border-[#8b5a2b] shadow-[0_4px_0_#5c3a1e,0_10px_15px_rgba(0,0,0,0.2)]";
+            " bg-[#fff8e7] text-[#4a2e15] border-[#8b5a2b] shadow-[0_6px_0_#5c3a1e,0_15px_20px_rgba(0,0,0,0.3)]";
           icon = "💡";
         }
 
-        toast.innerHTML = `<span class="text-base md:text-xl drop-shadow-sm">${icon}</span> <span class="drop-shadow-sm">${message}</span>`;
+        toast.innerHTML = `<span class="text-lg md:text-3xl drop-shadow-sm">${icon}</span> <span class="drop-shadow-sm">${message}</span>`;
 
         // Force reflow to ensure transitions work smoothly
         void toast.offsetWidth;
@@ -963,7 +945,12 @@
         toast.classList.add("translate-y-0", "opacity-100");
 
         clearTimeout(toastTimeout);
-        // Notifications now persist permanently!
+        if (duration > 0) {
+          toastTimeout = setTimeout(() => {
+            toast.classList.remove("translate-y-0", "opacity-100");
+            toast.classList.add("-translate-y-[150%]", "opacity-0");
+          }, duration);
+        }
       }
 
       function generateQuestions(count) {
@@ -1026,9 +1013,6 @@
         currentStep = 1; // Reset to the first step
         updateInputDisplay();
 
-        // Remove input glow from previous levels
-        DOM.inputContainer.classList.remove("input-ready-glow");
-
         DOM.onScreenTitle.innerText = level.modalTitle;
         DOM.onScreenDesc.innerHTML = level.modalDesc;
         DOM.levelIndicator.innerHTML = `🌟 Level ${currentLevelIndex + 1} of ${TOTAL_QUESTIONS}`;
@@ -1080,8 +1064,9 @@
         setTimeout(() => {
           if (DOM.startScreen.classList.contains("hidden")) {
             showToast(
-              "Slide the 100% handle to find the correct Cost Price!",
+              "Step 1: Slide to mark the Original Price (MRP).",
               "info",
+              5000,
             );
           }
         }, 500);
@@ -1099,17 +1084,14 @@
           DOM.startScreen.classList.add("hidden");
           // Show the initial toast exactly when the game screen becomes fully visible
           showToast(
-            "Slide the 100% handle to find the correct Cost Price!",
+            "Step 1: Slide to mark the Original Price (MRP).",
             "info",
+            5000,
           );
         }, 500);
       }
 
       function restartGame() {
-        const toast = document.getElementById("toast-message");
-        toast.classList.remove("translate-y-0", "opacity-100");
-        toast.classList.add("-translate-y-[150%]", "opacity-0");
-
         DOM.endScreen.classList.add("hidden");
         DOM.gameScreen.classList.remove("hidden");
         DOM.gameScreen.classList.add("flex");
@@ -1141,9 +1123,6 @@
         DOM.numpadPopup.classList.remove("hidden");
         DOM.inputCursor.classList.remove("hidden");
         DOM.inputContainer.classList.add("ring-2", "ring-teal-400");
-
-        // Remove glow once they interact with it
-        DOM.inputContainer.classList.remove("input-ready-glow");
       }
 
       function closeNumpad() {
@@ -1246,19 +1225,8 @@
       function addMarker() {
         const level = questions[currentLevelIndex];
 
-        // Calculate the visible grid gap (major step) to determine a fair tolerance
-        let majorStep = 10;
-        if (maxPounds <= 12) majorStep = 1;
-        else if (maxPounds <= 25) majorStep = 2;
-        else if (maxPounds <= 60) majorStep = 5;
-        else if (maxPounds <= 120) majorStep = 10;
-        else if (maxPounds <= 250) majorStep = 20;
-        else if (maxPounds <= 600) majorStep = 50;
-        else if (maxPounds <= 1200) majorStep = 100;
-        else majorStep = 200;
-
-        // Tolerance is exactly 20% of the visible gap (e.g., gap of 50 = tolerance 10)
-        const tolerance = Math.max(2, majorStep * 0.2);
+        // Define a strict but fair tolerance logic (e.g. within 2% of total scale, but min 2 units)
+        const tolerance = Math.max(2, maxPounds * 0.02);
 
         if (currentStep === 1) {
           // Looking for Original Price
@@ -1272,7 +1240,7 @@
             DOM.soundCorrect.currentTime = 0;
             DOM.soundCorrect.play().catch((e) => console.log("Audio error", e));
             showToast(
-              `Good job! Now find the discounted price, then slide and MARK it.`,
+              `Good job! Check where the ${level.percent}% mark is on the slider to find the discounted price, then slide and MARK it.`,
               "success",
               6000,
             );
@@ -1301,9 +1269,6 @@
               "success",
               6000,
             );
-
-            // Highlight the answer box to tell the student it's time to type!
-            DOM.inputContainer.classList.add("input-ready-glow");
           } else {
             DOM.soundWrong.currentTime = 0;
             DOM.soundWrong.play().catch((e) => console.log("Audio error", e));
@@ -1326,14 +1291,26 @@
       function clearMarkers() {
         markers = [];
         currentStep = 1;
-        DOM.inputContainer.classList.remove("input-ready-glow");
         showToast(
           "Pins cleared. Step 1: Mark the Original Price.",
           "info",
           4000,
         );
 
-        // Removed dynamic scaling - Ruler stays rigidly locked to its original size!
+        // Recalculate maxPounds to snap the ruler back to normal size
+        let ideal = rulerVal * 1.2;
+        if (ideal < 10) ideal = 10;
+
+        let newMax;
+        if (ideal <= 20) newMax = Math.ceil(ideal / 2) * 2;
+        else if (ideal <= 50) newMax = Math.ceil(ideal / 5) * 5;
+        else if (ideal <= 100) newMax = Math.ceil(ideal / 10) * 10;
+        else if (ideal <= 250) newMax = Math.ceil(ideal / 20) * 20;
+        else if (ideal <= 600) newMax = Math.ceil(ideal / 50) * 50;
+        else if (ideal <= 1200) newMax = Math.ceil(ideal / 100) * 100;
+        else newMax = Math.ceil(ideal / 200) * 200;
+
+        maxPounds = newMax;
         renderRuler();
       }
 
@@ -1353,7 +1330,30 @@
         document.removeEventListener("pointerup", handlePointerUp);
         isAnimating = true;
 
-        // Removed dynamic scaling - Ruler stays rigidly locked to its original size!
+        let maxVal = rulerVal;
+        if (markers.length > 0) {
+          maxVal = Math.max(rulerVal, ...markers);
+        }
+
+        let ideal = maxVal * 1.2;
+        if (ideal < 10) ideal = 10;
+
+        let newMax;
+        if (ideal <= 20) newMax = Math.ceil(ideal / 2) * 2;
+        else if (ideal <= 50) newMax = Math.ceil(ideal / 5) * 5;
+        else if (ideal <= 100) newMax = Math.ceil(ideal / 10) * 10;
+        else if (ideal <= 250) newMax = Math.ceil(ideal / 20) * 20;
+        else if (ideal <= 600) newMax = Math.ceil(ideal / 50) * 50;
+        else if (ideal <= 1200) newMax = Math.ceil(ideal / 100) * 100;
+        else newMax = Math.ceil(ideal / 200) * 200;
+
+        // If markers exist, prevent the ruler from shrinking so pins don't disappear
+        if (markers.length > 0) {
+          maxPounds = Math.max(maxPounds, newMax);
+        } else {
+          maxPounds = newMax;
+        }
+
         renderRuler();
       }
 
@@ -1373,9 +1373,12 @@
         const pointerX = x - rect.left;
         let percentX = pointerX / trackWidthPx;
 
-        // Prevent dragging out of bounds without stretching the ruler
-        if (percentX > 1) percentX = 1;
-        if (percentX < 0) percentX = 0;
+        if (percentX > 0.95) {
+          maxPounds *= 1.03;
+          percentX = 0.95;
+          renderRuler();
+        }
+        if (percentX < 0.05) percentX = 0.05;
 
         rulerVal = percentX * maxPounds;
         updateRulerVisualsOnly();
@@ -1431,9 +1434,7 @@
 
       function renderRuler() {
         const transClass = isAnimating ? "ruler-animating" : "";
-        // Lock the percentage track to the first marker (MRP) once placed!
-        const topTrackVal = markers.length > 0 ? markers[0] : rulerVal;
-        const topTrackWidthPercent = (topTrackVal / maxPounds) * 100;
+        const topTrackWidthPercent = (rulerVal / maxPounds) * 100;
 
         let visiblePercentTicks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
         if (topTrackWidthPercent < 30) visiblePercentTicks = [0, 50, 100];
@@ -1490,22 +1491,12 @@
       }
 
       function updateRulerVisualsOnly() {
-        const handlePercent = (rulerVal / maxPounds) * 100;
+        const topTrackWidthPercent = (rulerVal / maxPounds) * 100;
 
-        // Lock the percentage track to the first marker (MRP) once placed!
-        const topTrackVal = markers.length > 0 ? markers[0] : rulerVal;
-        const topTrackWidthPercent = (topTrackVal / maxPounds) * 100;
-
-        if (isAnimating) {
-          DOM.topTrack.classList.add("ruler-animating");
-          DOM.rulerHandle.classList.add("ruler-animating");
-        } else {
-          DOM.topTrack.classList.remove("ruler-animating");
-          DOM.rulerHandle.classList.remove("ruler-animating");
-        }
+        if (isAnimating) DOM.topTrack.classList.add("ruler-animating");
+        else DOM.topTrack.classList.remove("ruler-animating");
 
         DOM.topTrack.style.width = `${topTrackWidthPercent}%`;
-        DOM.rulerHandle.style.left = `${handlePercent}%`;
       }
 
       function triggerPartyPopper(continuous = false) {
